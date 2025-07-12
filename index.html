@@ -50,7 +50,7 @@
                     <input type="tel" id="login-phone" name="phone" required class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" placeholder="טלפון נייד">
                 </div>
                 <button type="submit" class="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-transform transform hover:scale-105 shadow-md">
-                    כניסה
+                    כניסה ושליחת פרטים בוואטסאפ
                 </button>
             </form>
         </div>
@@ -1170,9 +1170,11 @@
                         return;
                     }
 
-                    const subject = encodeURIComponent("רישום חדש לאפליקציית חינוך גופני");
-                    const body = encodeURIComponent(`פרטי משתמש חדש:\n\nשם: ${name}\nמייל: ${email}\nטלפון: ${phone}`);
-                    window.open(`mailto:liront17@gmail.com?subject=${subject}&body=${body}`);
+                    // Replace with your phone number in international format (e.g., 9725XXXXXXXXX)
+                    const adminPhoneNumber = "9725XXXXXXXXX"; 
+                    const message = encodeURIComponent(`רישום חדש לאפליקציה:\n\nשם: ${name}\nמייל: ${email}\nטלפון: ${phone}`);
+                    const whatsappUrl = `https://api.whatsapp.com/send?phone=${adminPhoneNumber}&text=${message}`;
+                    window.open(whatsappUrl, '_blank');
 
                     loginPage.style.display = 'none';
                     mainApp.style.display = 'block';
