@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>כניסה - חינוך גופני בדיגיטל</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Rubik', sans-serif;
+        }
+        .loader {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #3b82f6;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        #ai-modal-content {
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body class="bg-slate-100">
+
+    <!-- Login Page -->
+    <div id="login-page" class="flex items-center justify-center min-h-screen">
+        <div class="w-full max-w-md mx-auto p-8 bg-white rounded-xl shadow-lg text-center">
+            <h1 class="text-4xl font-bold text-blue-600 mb-2">חינוך גופני בדיגיטל</h1>
+            <p class="text-slate-500 mb-8">אנא מלא את פרטיך לכניסה ראשונית</p>
+            <form id="login-form" class="space-y-4">
+                <div>
+                    <label for="login-name" class="sr-only">שם מלא</label>
+                    <input type="text" id="login-name" name="name" required class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" placeholder="שם מלא">
+                </div>
+                <div>
+                    <label for="login-email" class="sr-only">מייל</label>
+                    <input type="email" id="login-email" name="email" required class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" placeholder="כתובת מייל">
+                </div>
+                <div>
+                    <label for="login-phone" class="sr-only">טלפון נייד</label>
+                    <input type="tel" id="login-phone" name="phone" required class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" placeholder="טלפון נייד">
+                </div>
+                <button type="submit" class="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-transform transform hover:scale-105 shadow-md">
+                    כניסה
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main App (initially hidden) -->
+    <div id="main-app" class="hidden">
+        <div id="initial-loader" class="fixed inset-0 bg-gray-500 bg-opacity-50 z-50 flex justify-center items-center">
+            <div class="loader"></div>
+        </div>
+        <div class="container mx-auto p-4 md:p-8 max-w-7xl">
+            <header class="text-center mb-10">
+                <h1 class="text-4xl md:text-5xl font-bold text-blue-600">מחשבון ציונים לחינוך גופני ✨</h1>
+                <p class="text-lg text-slate-600 mt-2">הזן נתונים, קבל ציונים והפק תובנות ומערכי שיעור מבוססי AI</p>
+                <p class="text-xs text-slate-400 mt-2">זכויות יוצרים © לירון טל</p>
+            </header>
+
+            <main class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                
+                <!-- Input Form Section -->
+                <div class="bg-white p-6 rounded-xl shadow-lg">
+                    <h2 class="text-2xl font-semibold mb-6 border-b-2 border-slate-200 pb-3">הוספת רשומה חדשה</h2>
+                    <form id="student-form" class="space-y-4">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label for="gender" class="block text-sm font-medium text-slate-700 mb-1">מין</label>
+                                <select id="gender" required class="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                    <option value="בנות">בנות</option>
+                                    <option value="בנים">בנים</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="grade-level" class="block text-sm font-medium text-slate-700 mb-1">שכבה</label>
+                                <select id="grade-level" required class="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                    <!-- Options populated by JS -->
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="class-name-select" class="block text-sm font-medium text-slate-700 mb-1">כיתה</label>
+                            <select id="class-name-select" required class="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            </select>
+                        </div>
+                         <div>
+                            <label for="test-date" class="block text-sm font-medium text-slate-700 mb-1">תאריך</label>
+                            <input type="date" id="test-date" required class="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label for="test-type" class="block text-sm font-medium text-slate-700 mb-1">סוג המבחן</label>
+                            <select id="test-type" required class="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            </select>
+                        </div>
+
+                        <div class="flex items-center pt-2">
+                            <input id="lock-form" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                            <label for="lock-form" class="mr-2 block text-sm text-slate-900">נעל הגדרות להזנה מהירה</label>
+                        </div>
+
+                        <hr class="my-4 border-slate-200">
+
+                        <div>
+                            <label for="first-name" class="block text-sm font-medium text-slate-700 mb-1">שם פרטי</label>
+                            <input type="text" id="first-name" required class="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="לדוגמה: דנה">
+                        </div>
+                        <div>
+                            <label for="last-name" class="block text-sm font-medium text-slate-700 mb-1">שם משפחה</label>
+                            <input type="text" id="last-name" required class="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="לדוגמה: כהן">
+                        </div>
+                        
+                        <div>
+                            <label for="result" class="block text-sm font-medium text-slate-700 mb-1">תוצאה (<span id="unit-display"></span>)</label>
+                            <input type="text" id="result" required class="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="הזן תוצאה (לזמן: ד:ש)">
+                        </div>
+                        
+                        <button type="submit" class="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-transform transform hover:scale-105 shadow-md">
+                            חשב והוסף לטבלה
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Results Table Section -->
+                <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-lg">
+                    <div class="flex flex-col sm:flex-row justify-between items-center mb-4 gap-4">
+                        <h2 class="text-2xl font-semibold">רשומות שהוזנו</h2>
+                        <div class="flex gap-2 flex-wrap justify-center">
+                             <button id="open-share-group-modal" class="bg-cyan-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-cyan-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 transition-transform transform hover:scale-105 shadow-md">
+                                שתף קבוצה
+                            </button>
+                            <button id="export-excel" class="bg-green-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-transform transform hover:scale-105 shadow-md">
+                                ייצא ל-Excel
+                            </button>
+                             <button id="clear-all" class="bg-red-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-transform transform hover:scale-105 shadow-md">
+                                נקה הכל
+                            </button>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-slate-200">
+                            <thead class="bg-slate-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">שם מלא</th>
+                                    <th class="px-6 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">מין</th>
+                                    <th class="px-6 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">כיתה</th>
+                                    <th class="px-6 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">מבחן</th>
+                                    <th class="px-6 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">תוצאה</th>
+                                    <th class="px-6 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">ציון</th>
+                                    <th class="px-6 py-3 text-center text-xs font-medium text-slate-500 uppercase tracking-wider">פעולות</th>
+                                </tr>
+                            </thead>
+                            <tbody id="results-tbody" class="bg-white divide-y divide-slate-200">
+                            </tbody>
+                        </table>
+                    </div>
+                     <div id="summary" class="mt-6 p-4 bg-slate-50 rounded-lg">
+                        <h3 class="text-lg font-semibold mb-2">סיכום וכלים</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="text-center p-4 bg-white rounded-lg shadow-sm">
+                                <p class="text-sm text-slate-600">מספר רשומות</p>
+                                <p id="student-count" class="font-bold text-3xl text-blue-600">0</p>
+                            </div>
+                            <div class="text-center p-4 bg-white rounded-lg shadow-sm">
+                                 <p class="text-sm text-slate-600">ממוצע ציונים</p>
+                                <p id="average-grade" class="font-bold text-3xl text-blue-600">0</p>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+                             <button id="generate-insights" class="bg-purple-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-transform transform hover:scale-105 disabled:bg-slate-400 disabled:cursor-not-allowed shadow-md">
+                                ✨ הפק תובנות
+                            </button>
+                            <button id="open-lesson-plan-modal" class="bg-teal-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 transition-transform transform hover:scale-105 shadow-md">
+                                ✨ צור מערך שיעור
+                            </button>
+                            <button id="open-report-card-modal" class="lg:col-span-2 bg-orange-500 text-white font-bold py-3 px-4 rounded-lg hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition-transform transform hover:scale-105 disabled:bg-slate-400 disabled:cursor-not-allowed shadow-md">
+                                ✨ הפק הערכה לתעודה
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+            
+            <!-- Modals -->
+            <div id="confirm-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+                <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+                    <div class="mt-3 text-center">
+                        <h3 id="confirm-modal-title" class="text-lg leading-6 font-medium text-slate-900"></h3>
+                        <div class="mt-2 px-7 py-3"><p id="confirm-modal-message" class="text-sm text-slate-500"></p></div>
+                        <div class="items-center px-4 py-3">
+                            <button id="modal-confirm" class="font-bold py-2 px-4 rounded-lg transition-transform transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 bg-red-600 text-white hover:bg-red-700 focus:ring-red-500">אישור</button>
+                            <button id="modal-cancel" class="font-bold py-2 px-4 rounded-lg transition-transform transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 bg-slate-200 text-slate-800 hover:bg-slate-300 focus:ring-slate-400 ml-2">ביטול</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="ai-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+                <div class="relative top-10 mx-auto p-5 border w-full max-w-2xl shadow-lg rounded-md bg-white">
+                    <div class="flex justify-between items-center border-b rounded-t pb-3">
+                        <h3 id="ai-modal-title" class="text-xl font-semibold text-slate-900"></h3>
+                        <button id="ai-modal-close" type="button" class="text-slate-400 bg-transparent hover:bg-slate-200 hover:text-slate-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                        </button>
+                    </div>
+                    <div id="ai-modal-body" class="mt-4"><div id="ai-modal-loader" class="flex justify-center items-center h-40"><div class="loader"></div></div><div id="ai-modal-content" class="text-slate-700 leading-relaxed" style="display: none;"></div></div>
+                </div>
+            </div>
+
+            <div id="lesson-plan-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+                <div class="relative top-20 mx-auto p-5 border w-full max-w-lg shadow-lg rounded-md bg-white">
+                    <form id="lesson-plan-form">
+                        <h3 class="text-xl font-semibold text-slate-900 mb-4">מחולל מערכי שיעור ✨</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label for="fitness-component" class="block text-sm font-medium text-slate-700 mb-1">מרכיב כושר לשיפור</label>
+                                <select id="fitness-component" class="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white">
+                                    <option>סיבולת לב-ריאה</option><option>כוח</option><option>מהירות וזריזות</option><option>גמישות</option><option>קואורדינציה</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="equipment" class="block text-sm font-medium text-slate-700 mb-1">ציוד זמין</label>
+                                <input type="text" id="equipment" class="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="לדוגמה: כדורים, קונוסים, דלגיות">
+                            </div>
+                            <div>
+                                 <label for="lesson-duration" class="block text-sm font-medium text-slate-700 mb-1">משך השיעור</label>
+                                <select id="lesson-duration" class="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white">
+                                    <option>45 דקות</option><option>90 דקות</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="items-center px-4 py-3 mt-4 text-left">
+                            <button type="button" id="lesson-plan-cancel" class="font-bold py-2 px-4 rounded-lg transition-transform transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 bg-slate-200 text-slate-800 hover:bg-slate-300 focus:ring-slate-400">ביטול</button>
+                            <button type="submit" class="font-bold py-2 px-4 rounded-lg transition-transform transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 bg-teal-600 text-white hover:bg-teal-700 focus:ring-teal-500 ml-2">הפק מערך שיעור</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <div id="share-group-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+                <div class="relative top-20 mx-auto p-5 border w-full max-w-lg shadow-lg rounded-md bg-white">
+                    <form id="share-group-form">
+                        <h3 class="text-xl font-semibold text-slate-900 mb-4">שיתוף קבוצתי לוואטסאפ</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label for="class-to-share" class="block text-sm font-medium text-slate-700 mb-1">בחר כיתה לשיתוף</label>
+                                <select id="class-to-share" class="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"></select>
+                            </div>
+                            <div>
+                                <label for="test-to-share" class="block text-sm font-medium text-slate-700 mb-1">בחר מבחן לשיתוף</label>
+                                <select id="test-to-share" class="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"></select>
+                            </div>
+                        </div>
+                        <div class="items-center px-4 py-3 mt-4 text-left">
+                            <button type="button" id="share-group-cancel" class="font-bold py-2 px-4 rounded-lg transition-transform transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 bg-slate-200 text-slate-800 hover:bg-slate-300 focus:ring-slate-400">ביטול</button>
+                            <button type="submit" class="font-bold py-2 px-4 rounded-lg transition-transform transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 bg-cyan-500 text-white hover:bg-cyan-600 focus:ring-cyan-500 ml-2">צור ושתף</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div id="training-plan-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+                <div class="relative top-20 mx-auto p-5 border w-full max-w-lg shadow-lg rounded-md bg-white">
+                    <form id="training-plan-form">
+                        <h3 class="text-xl font-semibold text-slate-900 mb-2">מחולל תוכנית אימונים ✨</h3>
+                        <p id="training-plan-student-info" class="text-sm text-slate-600 mb-4"></p>
+                        <div class="space-y-4">
+                            <div>
+                                <label for="training-goal" class="block text-sm font-medium text-slate-700 mb-1">מטרת התוכנית</label>
+                                <input type="text" id="training-goal" class="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="לדוגמה: שיפור התוצאה ב-30 שניות">
+                            </div>
+                            <div>
+                                 <label for="training-duration" class="block text-sm font-medium text-slate-700 mb-1">משך התוכנית</label>
+                                <select id="training-duration" class="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white">
+                                    <option value="שבוע">שבוע 1</option>
+                                    <option value="שבועיים">שבועיים</option>
+                                    <option value="4 שבועות">4 שבועות</option>
+                                    <option value="6 שבועות">6 שבועות</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="items-center px-4 py-3 mt-4 text-left">
+                            <button type="button" id="training-plan-cancel" class="font-bold py-2 px-4 rounded-lg transition-transform transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 bg-slate-200 text-slate-800 hover:bg-slate-300 focus:ring-slate-400">ביטול</button>
+                            <button type="submit" class="font-bold py-2 px-4 rounded-lg transition-transform transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 bg-indigo-600 text-white hover:bg-indigo-700 focus:ring-indigo-500 ml-2">הפק תוכנית אימונים</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div id="report-card-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+                <div class="relative top-20 mx-auto p-5 border w-full max-w-lg shadow-lg rounded-md bg-white">
+                    <form id="report-card-form">
+                        <h3 class="text-xl font-semibold text-slate-900 mb-4">מחולל הערכה לתעודה ✨</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label for="student-to-evaluate" class="block text-sm font-medium text-slate-700 mb-1">בחר תלמיד/ה להערכה</label>
+                                <select id="student-to-evaluate" class="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"></select>
+                            </div>
+                        </div>
+                        <div class="items-center px-4 py-3 mt-4 text-left">
+                            <button type="button" id="report-card-cancel" class="font-bold py-2 px-4 rounded-lg transition-transform transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 bg-slate-200 text-slate-800 hover:bg-slate-300 focus:ring-slate-400">ביטול</button>
+                            <button type="submit" class="font-bold py-2 px-4 rounded-lg transition-transform transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 bg-orange-500 text-white hover:bg-orange-600 focus:ring-orange-500 ml-2">הפק הערכה</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        // --- CONFIGURATION ---
+        const CLASSES_PER_GRADE = { 'ז': 8, 'ח': 8, 'ט': 8, 'י': 8, 'יא': 8, 'יב': 8 };
+
+        // --- GRADING DATA ---
+        const GRADING_DATA = {
+            "בנות": {
+                "י": {
+                    "דילגית 60 שנ'": { unit: "קפיצות", lowerIsBetter: false, grades: [{score: 100, threshold: 130}, {score: 95, threshold: 120}, {score: 90, threshold: 115}, {score: 85, threshold: 110}, {score: 80, threshold: 105}, {score: 75, threshold: 100}, {score: 70, threshold: 95}, {score: 65, threshold: 90}, {score: 60, threshold: 85}, {score: 55, threshold: 80}, {score: 50, threshold: 75}]},
+                    "פלאנק בשניות": { unit: "שניות", lowerIsBetter: false, grades: [{score: 100, threshold: 70}, {score: 95, threshold: 68}, {score: 90, threshold: 65}, {score: 85, threshold: 63}, {score: 80, threshold: 60}, {score: 75, threshold: 56}, {score: 70, threshold: 50}, {score: 65, threshold: 46}, {score: 60, threshold: 40}, {score: 55, threshold: 35}, {score: 50, threshold: 26}]},
+                    "ריצת 2000 מטר": { unit: "דקות", isTime: true, lowerIsBetter: true, grades: [{score: 100, threshold: "08:30"}, {score: 95, threshold: "09:14"}, {score: 90, threshold: "09:58"}, {score: 85, threshold: "10:48"}, {score: 80, threshold: "11:38"}, {score: 75, threshold: "12:28"}, {score: 70, threshold: "13:20"}, {score: 65, threshold: "14:15"}, {score: 60, threshold: "15:25"}, {score: 55, threshold: "16:10"}, {score: 50, threshold: "17:00"}]},
+                    "4x10": { unit: "שניות", lowerIsBetter: true, grades: [{score: 100, threshold: 10.3}, {score: 95, threshold: 11}, {score: 90, threshold: 11.5}, {score: 85, threshold: 12}, {score: 80, threshold: 12.5}, {score: 75, threshold: 13}, {score: 70, threshold: 13.5}, {score: 65, threshold: 14}, {score: 60, threshold: 14.5}, {score: 55, threshold: 15.5}, {score: 50, threshold: 16}]},
+                    "קפיצה למרחק מהמקום": { unit: "ס\"מ", lowerIsBetter: false, grades: [{score: 100, threshold: 208}, {score: 95, threshold: 202}, {score: 90, threshold: 196}, {score: 85, threshold: 185}, {score: 80, threshold: 170}, {score: 75, threshold: 154}, {score: 70, threshold: 141}, {score: 65, threshold: 126}, {score: 60, threshold: 111}, {score: 55, threshold: 96}, {score: 50, threshold: 87}]},
+                    "ריצת 80 מ'": { unit: "שניות", lowerIsBetter: true, grades: [{score: 100, threshold: 11.8}, {score: 95, threshold: 12.01}, {score: 90, threshold: 12.4}, {score: 85, threshold: 12.7}, {score: 80, threshold: 13.0}, {score: 75, threshold: 13.3}, {score: 70, threshold: 13.6}, {score: 65, threshold: 13.9}, {score: 60, threshold: 14.2}, {score: 55, threshold: 14.6}, {score: 50, threshold: 14.9}]},
+                    "תליית און": { unit: "שניות", lowerIsBetter: false, grades: [{score: 100, threshold: 55}, {score: 95, threshold: 52}, {score: 90, threshold: 50}, {score: 85, threshold: 49}, {score: 80, threshold: 47}, {score: 75, threshold: 45}, {score: 70, threshold: 42}, {score: 65, threshold: 40}, {score: 60, threshold: 37}, {score: 55, threshold: 35}, {score: 50, threshold: 30}]}
+                },
+                "יא": {
+                    "דילגית 60 שנ'": { unit: "קפיצות", lowerIsBetter: false, grades: [{score: 100, threshold: 135}, {score: 95, threshold: 130}, {score: 90, threshold: 125}, {score: 85, threshold: 120}, {score: 80, threshold: 115}, {score: 75, threshold: 110}, {score: 70, threshold: 105}, {score: 65, threshold: 100}, {score: 60, threshold: 85}, {score: 55, threshold: 75}, {score: 50, threshold: 65}]},
+                    "פלאנק בשניות": { unit: "שניות", lowerIsBetter: false, grades: [{score: 100, threshold: 80}, {score: 95, threshold: 73}, {score: 90, threshold: 75}, {score: 85, threshold: 72}, {score: 80, threshold: 66}, {score: 75, threshold: 62}, {score: 70, threshold: 56}, {score: 65, threshold: 52}, {score: 60, threshold: 46}, {score: 55, threshold: 40}, {score: 50, threshold: 30}]},
+                    "ריצת 2000 מטר": { unit: "דקות", isTime: true, lowerIsBetter: true, grades: [{score: 100, threshold: "08:10"}, {score: 95, threshold: "08:52"}, {score: 90, threshold: "09:32"}, {score: 85, threshold: "10:14"}, {score: 80, threshold: "11:05"}, {score: 75, threshold: "11:55"}, {score: 70, threshold: "12:45"}, {score: 65, threshold: "13:50"}, {score: 60, threshold: "15:05"}, {score: 55, threshold: "16:00"}, {score: 50, threshold: "16:50"}]},
+                    "4x10": { unit: "שניות", lowerIsBetter: true, grades: [{score: 100, threshold: 10}, {score: 95, threshold: 10.6}, {score: 90, threshold: 11.2}, {score: 85, threshold: 11.6}, {score: 80, threshold: 12.3}, {score: 75, threshold: 12.8}, {score: 70, threshold: 13.4}, {score: 65, threshold: 13.9}, {score: 60, threshold: 14.4}, {score: 55, threshold: 15}, {score: 50, threshold: 15.5}]},
+                    "קפיצה למרחק מהמקום": { unit: "ס\"מ", lowerIsBetter: false, grades: [{score: 100, threshold: 211}, {score: 95, threshold: 203}, {score: 90, threshold: 197}, {score: 85, threshold: 191}, {score: 80, threshold: 176}, {score: 75, threshold: 158}, {score: 70, threshold: 141}, {score: 65, threshold: 126}, {score: 60, threshold: 111}, {score: 55, threshold: 96}, {score: 50, threshold: 87}]},
+                    "ריצת 80 מ'": { unit: "שניות", lowerIsBetter: true, grades: [{score: 100, threshold: 11.4}, {score: 95, threshold: 11.7}, {score: 90, threshold: 12.0}, {score: 85, threshold: 12.3}, {score: 80, threshold: 12.6}, {score: 75, threshold: 12.9}, {score: 70, threshold: 13.2}, {score: 65, threshold: 13.5}, {score: 60, threshold: 13.9}, {score: 55, threshold: 14.3}, {score: 50, threshold: 14.6}]},
+                    "תליית און": { unit: "שניות", lowerIsBetter: false, grades: [{score: 100, threshold: 65}, {score: 95, threshold: 63}, {score: 90, threshold: 61}, {score: 85, threshold: 60}, {score: 80, threshold: 58}, {score: 75, threshold: 56}, {score: 70, threshold: 55}, {score: 65, threshold: 51}, {score: 60, threshold: 45}, {score: 55, threshold: 40}, {score: 50, threshold: 35}]}
+                },
+                "יב": {
+                    "דילגית 60 שנ'": { unit: "קפיצות", lowerIsBetter: false, grades: [{score: 100, threshold: 140}, {score: 95, threshold: 130}, {score: 90, threshold: 120}, {score: 85, threshold: 115}, {score: 80, threshold: 110}, {score: 75, threshold: 105}, {score: 70, threshold: 100}, {score: 65, threshold: 95}, {score: 60, threshold: 90}, {score: 55, threshold: 85}, {score: 50, threshold: 80}]},
+                    "פלאנק בשניות": { unit: "שניות", lowerIsBetter: false, grades: [{score: 100, threshold: 90}, {score: 95, threshold: 85}, {score: 90, threshold: 80}, {score: 85, threshold: 75}, {score: 80, threshold: 70}, {score: 75, threshold: 65}, {score: 70, threshold: 60}, {score: 65, threshold: 55}, {score: 60, threshold: 50}, {score: 55, threshold: 45}, {score: 50, threshold: 40}]},
+                    "ריצת 2000 מטר": { unit: "דקות", isTime: true, lowerIsBetter: true, grades: [{score: 100, threshold: "08:00"}, {score: 95, threshold: "08:44"}, {score: 90, threshold: "09:34"}, {score: 85, threshold: "10:25"}, {score: 80, threshold: "11:15"}, {score: 75, threshold: "12:05"}, {score: 70, threshold: "12:55"}, {score: 65, threshold: "13:45"}, {score: 60, threshold: "14:35"}, {score: 55, threshold: "15:50"}, {score: 50, threshold: "17:00"}]},
+                    "4x10": { unit: "שניות", lowerIsBetter: true, grades: [{score: 100, threshold: 9.5}, {score: 95, threshold: 10}, {score: 90, threshold: 10.6}, {score: 85, threshold: 11.4}, {score: 80, threshold: 12.1}, {score: 75, threshold: 12.6}, {score: 70, threshold: 13.2}, {score: 65, threshold: 13.7}, {score: 60, threshold: 14.2}, {score: 55, threshold: 14.7}, {score: 50, threshold: 15.5}]},
+                    "קפיצה למרחק מהמקום": { unit: "ס\"מ", lowerIsBetter: false, grades: [{score: 100, threshold: 215}, {score: 95, threshold: 206}, {score: 90, threshold: 200}, {score: 85, threshold: 194}, {score: 80, threshold: 184}, {score: 75, threshold: 173}, {score: 70, threshold: 157}, {score: 65, threshold: 140}, {score: 60, threshold: 115}, {score: 55, threshold: 96}, {score: 50, threshold: 87}]},
+                    "ריצת 80 מ'": { unit: "שניות", lowerIsBetter: true, grades: [{score: 100, threshold: 11.0}, {score: 95, threshold: 11.3}, {score: 90, threshold: 11.6}, {score: 85, threshold: 11.9}, {score: 80, threshold: 12.2}, {score: 75, threshold: 12.5}, {score: 70, threshold: 12.9}, {score: 65, threshold: 13.3}, {score: 60, threshold: 13.7}, {score: 55, threshold: 14.1}, {score: 50, threshold: 14.4}]},
+                    "תליית און": { unit: "שניות", lowerIsBetter: false, grades: [{score: 100, threshold: 75}, {score: 95, threshold: 72}, {score: 90, threshold: 70}, {score: 85, threshold: 67}, {score: 80, threshold: 64}, {score: 75, threshold: 61}, {score: 70, threshold: 58}, {score: 65, threshold: 52}, {score: 60, threshold: 49}, {score: 55, threshold: 45}, {score: 50, threshold: 40}]}
+                }
+            },
+            "בנים": {
+                "ז": {
+                    "ריצת 60 מטר": { unit: "שניות", lowerIsBetter: true, grades: [ {score: 100, threshold: 9.00}, {score: 99, threshold: 9.04}, {score: 98, threshold: 9.08}, {score: 97, threshold: 9.12}, {score: 96, threshold: 9.16}, {score: 95, threshold: 9.20}, {score: 94, threshold: 9.24}, {score: 93, threshold: 9.28}, {score: 92, threshold: 9.32}, {score: 91, threshold: 9.36}, {score: 90, threshold: 9.40}, {score: 89, threshold: 9.46}, {score: 88, threshold: 9.50}, {score: 87, threshold: 9.54}, {score: 86, threshold: 9.56}, {score: 85, threshold: 9.60}, {score: 84, threshold: 9.64}, {score: 83, threshold: 9.68}, {score: 82, threshold: 9.72}, {score: 81, threshold: 9.76}, {score: 80, threshold: 9.80}, {score: 79, threshold: 9.86}, {score: 78, threshold: 9.90}, {score: 77, threshold: 9.94}, {score: 76, threshold: 10.00}, {score: 75, threshold: 10.06}, {score: 74, threshold: 10.10}, {score: 73, threshold: 10.20}, {score: 72, threshold: 10.30}, {score: 71, threshold: 10.40}, {score: 70, threshold: 10.50}, {score: 69, threshold: 10.60}, {score: 68, threshold: 10.70}, {score: 67, threshold: 10.80}, {score: 66, threshold: 10.90}, {score: 65, threshold: 11.00}, {score: 60, threshold: 11.20}, {score: 55, threshold: 11.70}, {score: 50, threshold: 12.10} ]},
+                    "קפיצה למרחק מהמקום": { unit: "ס\"מ", lowerIsBetter: false, grades: [ {score: 100, threshold: 200}, {score: 99, threshold: 197}, {score: 98, threshold: 194}, {score: 97, threshold: 192}, {score: 96, threshold: 190}, {score: 95, threshold: 188}, {score: 94, threshold: 186}, {score: 93, threshold: 184}, {score: 92, threshold: 182}, {score: 91, threshold: 180}, {score: 90, threshold: 178}, {score: 89, threshold: 176}, {score: 88, threshold: 174}, {score: 87, threshold: 172}, {score: 86, threshold: 170}, {score: 85, threshold: 168}, {score: 84, threshold: 166}, {score: 83, threshold: 164}, {score: 82, threshold: 162}, {score: 81, threshold: 160}, {score: 80, threshold: 158}, {score: 79, threshold: 156}, {score: 78, threshold: 154}, {score: 77, threshold: 152}, {score: 76, threshold: 150}, {score: 75, threshold: 147}, {score: 74, threshold: 144}, {score: 73, threshold: 141}, {score: 72, threshold: 138}, {score: 71, threshold: 135}, {score: 70, threshold: 132}, {score: 69, threshold: 129}, {score: 68, threshold: 126}, {score: 67, threshold: 123}, {score: 66, threshold: 120}, {score: 65, threshold: 117}, {score: 60, threshold: 102}, {score: 55, threshold: 89}, {score: 50, threshold: 80} ]},
+                    "ריצת 4x10 מטר": { unit: "שניות", lowerIsBetter: true, grades: [ {score: 100, threshold: 10.00}, {score: 99, threshold: 10.1}, {score: 98, threshold: 10.2}, {score: 97, threshold: 10.3}, {score: 96, threshold: 10.4}, {score: 95, threshold: 10.5}, {score: 94, threshold: 10.6}, {score: 93, threshold: 10.7}, {score: 92, threshold: 10.8}, {score: 91, threshold: 10.9}, {score: 90, threshold: 11.0}, {score: 89, threshold: 11.1}, {score: 88, threshold: 11.2}, {score: 87, threshold: 11.3}, {score: 86, threshold: 11.4}, {score: 85, threshold: 11.5}, {score: 84, threshold: 11.6}, {score: 83, threshold: 11.7}, {score: 82, threshold: 11.8}, {score: 81, threshold: 11.9}, {score: 80, threshold: 12.0}, {score: 75, threshold: 12.5}, {score: 70, threshold: 13.0}, {score: 65, threshold: 13.5}, {score: 60, threshold: 14.0}, {score: 55, threshold: 15.0}, {score: 50, threshold: 15.5} ]},
+                    "מתח": { unit: "חזרות", lowerIsBetter: false, grades: [ {score: 100, threshold: 9}, {score: 97, threshold: 8}, {score: 94, threshold: 7}, {score: 90, threshold: 6}, {score: 85, threshold: 5}, {score: 80, threshold: 4}, {score: 70, threshold: 3}, {score: 65, threshold: 2}, {score: 60, threshold: 1}, {score: 55, threshold: 0} ]},
+                    "ריצת 2000 מטר": { unit: "דקות", isTime: true, lowerIsBetter: true, grades: [ {score: 100, threshold: "8:00"}, {score: 99, threshold: "8:10"}, {score: 98, threshold: "8:20"}, {score: 97, threshold: "8:28"}, {score: 96, threshold: "8:51"}, {score: 95, threshold: "8:59"}, {score: 94, threshold: "9:09"}, {score: 93, threshold: "9:16"}, {score: 92, threshold: "9:25"}, {score: 91, threshold: "9:34"}, {score: 90, threshold: "9:43"}, {score: 85, threshold: "10:32"}, {score: 80, threshold: "11:27"}, {score: 75, threshold: "12:26"}, {score: 70, threshold: "13:38"}, {score: 65, threshold: "14:52"}, {score: 60, threshold: "15:50"}, {score: 55, threshold: "16:46"}, {score: 50, threshold: "17:36"} ]},
+                    "כפיפות בטן": { unit: "חזרות", lowerIsBetter: false, grades: [ {score: 100, threshold: 60}, {score: 95, threshold: 55}, {score: 90, threshold: 50}, {score: 85, threshold: 45}, {score: 80, threshold: 40}, {score: 75, threshold: 35}, {score: 70, threshold: 30}, {score: 65, threshold: 25}, {score: 60, threshold: 20}, {score: 55, threshold: 15}, {score: 50, threshold: 10} ]},
+                    "דילגית": { unit: "קפיצות", lowerIsBetter: false, grades: [ {score: 100, threshold: 120}, {score: 95, threshold: 110}, {score: 90, threshold: 100}, {score: 85, threshold: 90}, {score: 80, threshold: 85}, {score: 75, threshold: 80}, {score: 70, threshold: 75}, {score: 65, threshold: 70}, {score: 60, threshold: 65}, {score: 55, threshold: 60}, {score: 50, threshold: 55} ]},
+                    "שכיבות סמיכה": { unit: "חזרות", lowerIsBetter: false, grades: [ {score: 100, threshold: 30}, {score: 98, threshold: 29}, {score: 96, threshold: 28}, {score: 94, threshold: 27}, {score: 92, threshold: 26}, {score: 90, threshold: 25}, {score: 88, threshold: 24}, {score: 86, threshold: 23}, {score: 84, threshold: 22}, {score: 82, threshold: 21}, {score: 80, threshold: 20}, {score: 78, threshold: 19}, {score: 74, threshold: 18}, {score: 71, threshold: 17}, {score: 68, threshold: 16}, {score: 66, threshold: 15}, {score: 64, threshold: 14}, {score: 62, threshold: 13}, {score: 60, threshold: 12}, {score: 58, threshold: 11}, {score: 56, threshold: 10}, {score: 53, threshold: 9}, {score: 51, threshold: 8} ]}
+                },
+                "ח": {
+                    "ריצת 60 מטר": { unit: "שניות", lowerIsBetter: true, grades: [ {score: 100, threshold: 8.80}, {score: 99, threshold: 8.82}, {score: 98, threshold: 8.84}, {score: 97, threshold: 8.86}, {score: 96, threshold: 8.88}, {score: 95, threshold: 8.90}, {score: 94, threshold: 8.92}, {score: 93, threshold: 8.94}, {score: 92, threshold: 8.96}, {score: 91, threshold: 8.98}, {score: 90, threshold: 9.00}, {score: 85, threshold: 9.10}, {score: 80, threshold: 9.30}, {score: 75, threshold: 9.50}, {score: 70, threshold: 9.70}, {score: 65, threshold: 10.20}, {score: 60, threshold: 10.70}, {score: 55, threshold: 11.20}, {score: 50, threshold: 11.70} ]},
+                    "קפיצה למרחק מהמקום": { unit: "ס\"מ", lowerIsBetter: false, grades: [ {score: 100, threshold: 210}, {score: 99, threshold: 208}, {score: 98, threshold: 206}, {score: 97, threshold: 204}, {score: 96, threshold: 202}, {score: 95, threshold: 200}, {score: 94, threshold: 198}, {score: 93, threshold: 196}, {score: 92, threshold: 194}, {score: 91, threshold: 192}, {score: 90, threshold: 190}, {score: 85, threshold: 175}, {score: 80, threshold: 161}, {score: 75, threshold: 150}, {score: 70, threshold: 138}, {score: 65, threshold: 126}, {score: 60, threshold: 112}, {score: 55, threshold: 100}, {score: 50, threshold: 87} ]},
+                    "ריצת 4x10 מטר": { unit: "שניות", lowerIsBetter: true, grades: [ {score: 100, threshold: 9.8}, {score: 99, threshold: 9.9}, {score: 98, threshold: 10.0}, {score: 97, threshold: 10.1}, {score: 96, threshold: 10.2}, {score: 95, threshold: 10.3}, {score: 94, threshold: 10.4}, {score: 93, threshold: 10.5}, {score: 92, threshold: 10.6}, {score: 91, threshold: 10.7}, {score: 90, threshold: 10.8}, {score: 85, threshold: 11.3}, {score: 80, threshold: 11.8}, {score: 75, threshold: 12.3}, {score: 70, threshold: 12.8}, {score: 65, threshold: 13.3}, {score: 60, threshold: 13.8}, {score: 55, threshold: 14.6}, {score: 50, threshold: 15.2} ]},
+                    "מתח": { unit: "חזרות", lowerIsBetter: false, grades: [ {score: 100, threshold: 10}, {score: 97, threshold: 9}, {score: 94, threshold: 8}, {score: 89, threshold: 7}, {score: 85, threshold: 6}, {score: 80, threshold: 5}, {score: 75, threshold: 4}, {score: 70, threshold: 3}, {score: 65, threshold: 2}, {score: 60, threshold: 1}, {score: 55, threshold: 0} ]},
+                    "ריצת 2000 מטר": { unit: "דקות", isTime: true, lowerIsBetter: true, grades: [ {score: 100, threshold: "7:54"}, {score: 99, threshold: "8:00"}, {score: 98, threshold: "8:07"}, {score: 97, threshold: "8:14"}, {score: 96, threshold: "8:21"}, {score: 95, threshold: "8:28"}, {score: 94, threshold: "8:35"}, {score: 93, threshold: "8:43"}, {score: 92, threshold: "8:52"}, {score: 91, threshold: "8:59"}, {score: 90, threshold: "9:09"}, {score: 85, threshold: "9:52"}, {score: 80, threshold: "10:43"}, {score: 75, threshold: "11:38"}, {score: 70, threshold: "12:40"}, {score: 65, threshold: "13:52"}, {score: 60, threshold: "15:08"}, {score: 55, threshold: "16:02"}, {score: 50, threshold: "16:56"} ]},
+                    "כפיפות בטן": { unit: "חזרות", lowerIsBetter: false, grades: [ {score: 100, threshold: 70}, {score: 95, threshold: 65}, {score: 90, threshold: 60}, {score: 85, threshold: 55}, {score: 80, threshold: 48}, {score: 75, threshold: 38}, {score: 70, threshold: 33}, {score: 65, threshold: 27}, {score: 60, threshold: 25}, {score: 55, threshold: 20}, {score: 50, threshold: 18} ]},
+                    "דילגית": { unit: "קפיצות", lowerIsBetter: false, grades: [ {score: 100, threshold: 130}, {score: 95, threshold: 117}, {score: 90, threshold: 106}, {score: 85, threshold: 94}, {score: 80, threshold: 83}, {score: 75, threshold: 77}, {score: 70, threshold: 70}, {score: 65, threshold: 62}, {score: 60, threshold: 56}, {score: 55, threshold: 49}, {score: 50, threshold: 44} ]},
+                    "שכיבות סמיכה": { unit: "חזרות", lowerIsBetter: false, grades: [ {score: 100, threshold: 35}, {score: 98, threshold: 34}, {score: 96, threshold: 33}, {score: 94, threshold: 32}, {score: 92, threshold: 31}, {score: 90, threshold: 30}, {score: 88, threshold: 29}, {score: 86, threshold: 28}, {score: 84, threshold: 27}, {score: 82, threshold: 26}, {score: 80, threshold: 25}, {score: 78, threshold: 24}, {score: 76, threshold: 23}, {score: 74, threshold: 22}, {score: 72, threshold: 21}, {score: 70, threshold: 20}, {score: 68, threshold: 19}, {score: 65, threshold: 18}, {score: 62, threshold: 17}, {score: 60, threshold: 16}, {score: 56, threshold: 15}, {score: 54, threshold: 14}, {score: 52, threshold: 13}, {score: 50, threshold: 12} ]}
+                },
+                "ט": {
+                    "ריצת 60 מטר": { unit: "שניות", lowerIsBetter: true, grades: [ {score: 100, threshold: 8.50}, {score: 99, threshold: 8.55}, {score: 98, threshold: 8.60}, {score: 97, threshold: 8.65}, {score: 96, threshold: 8.70}, {score: 95, threshold: 8.75}, {score: 94, threshold: 8.80}, {score: 93, threshold: 8.85}, {score: 92, threshold: 8.90}, {score: 91, threshold: 8.95}, {score: 90, threshold: 9.00}, {score: 85, threshold: 9.25}, {score: 80, threshold: 9.50}, {score: 75, threshold: 9.75}, {score: 70, threshold: 10.00}, {score: 65, threshold: 10.10}, {score: 60, threshold: 10.20}, {score: 55, threshold: 10.30}, {score: 50, threshold: 10.50} ]},
+                    "קפיצה למרחק מהמקום": { unit: "ס\"מ", lowerIsBetter: false, grades: [ {score: 100, threshold: 220}, {score: 99, threshold: 218}, {score: 98, threshold: 216}, {score: 97, threshold: 214}, {score: 96, threshold: 212}, {score: 95, threshold: 210}, {score: 94, threshold: 208}, {score: 93, threshold: 206}, {score: 92, threshold: 204}, {score: 91, threshold: 202}, {score: 90, threshold: 200}, {score: 85, threshold: 190}, {score: 80, threshold: 180}, {score: 75, threshold: 170}, {score: 70, threshold: 160}, {score: 65, threshold: 150}, {score: 60, threshold: 133}, {score: 55, threshold: 118}, {score: 50, threshold: 100} ]},
+                    "ריצת 4x10 מטר": { unit: "שניות", lowerIsBetter: true, grades: [ {score: 100, threshold: 9.5}, {score: 99, threshold: 9.6}, {score: 98, threshold: 9.7}, {score: 97, threshold: 9.8}, {score: 96, threshold: 9.9}, {score: 95, threshold: 10.0}, {score: 94, threshold: 10.1}, {score: 93, threshold: 10.2}, {score: 92, threshold: 10.3}, {score: 91, threshold: 10.4}, {score: 90, threshold: 10.5}, {score: 85, threshold: 11.0}, {score: 80, threshold: 11.5}, {score: 75, threshold: 12.0}, {score: 70, threshold: 12.5}, {score: 65, threshold: 13.0}, {score: 60, threshold: 13.6}, {score: 55, threshold: 14.2}, {score: 50, threshold: 15.0} ]},
+                    "מתח": { unit: "חזרות", lowerIsBetter: false, grades: [ {score: 100, threshold: 14}, {score: 97, threshold: 13}, {score: 93, threshold: 12}, {score: 90, threshold: 11}, {score: 88, threshold: 10}, {score: 86, threshold: 9}, {score: 83, threshold: 8}, {score: 80, threshold: 7}, {score: 77, threshold: 6}, {score: 73, threshold: 5}, {score: 70, threshold: 4}, {score: 66, threshold: 3}, {score: 60, threshold: 2}, {score: 55, threshold: 1}, {score: 50, threshold: 0} ]},
+                    "ריצת 2000 מטר": { unit: "דקות", isTime: true, lowerIsBetter: true, grades: [ {score: 100, threshold: "7:40"}, {score: 99, threshold: "7:45"}, {score: 98, threshold: "7:52"}, {score: 97, threshold: "7:59"}, {score: 96, threshold: "8:07"}, {score: 95, threshold: "8:16"}, {score: 94, threshold: "8:21"}, {score: 93, threshold: "8:28"}, {score: 92, threshold: "8:35"}, {score: 91, threshold: "8:43"}, {score: 90, threshold: "8:52"}, {score: 85, threshold: "9:34"}, {score: 80, threshold: "10:20"}, {score: 75, threshold: "11:05"}, {score: 70, threshold: "12:02"}, {score: 65, threshold: "13:10"}, {score: 60, threshold: "14:22"}, {score: 55, threshold: "15:40"}, {score: 50, threshold: "16:50"} ]},
+                    "כפיפות בטן": { unit: "חזרות", lowerIsBetter: false, grades: [ {score: 100, threshold: 80}, {score: 95, threshold: 75}, {score: 90, threshold: 70}, {score: 85, threshold: 65}, {score: 80, threshold: 60}, {score: 75, threshold: 50}, {score: 70, threshold: 40}, {score: 65, threshold: 35}, {score: 60, threshold: 29}, {score: 55, threshold: 24}, {score: 50, threshold: 18} ]},
+                    "דילגית": { unit: "קפיצות", lowerIsBetter: false, grades: [ {score: 100, threshold: 140}, {score: 95, threshold: 130}, {score: 90, threshold: 120}, {score: 85, threshold: 110}, {score: 80, threshold: 105}, {score: 75, threshold: 100}, {score: 70, threshold: 90}, {score: 65, threshold: 80}, {score: 60, threshold: 70}, {score: 55, threshold: 60}, {score: 50, threshold: 50} ]},
+                    "שכיבות סמיכה": { unit: "חזרות", lowerIsBetter: false, grades: [ {score: 100, threshold: 38}, {score: 98, threshold: 37}, {score: 96, threshold: 36}, {score: 94, threshold: 35}, {score: 92, threshold: 34}, {score: 90, threshold: 33}, {score: 88, threshold: 32}, {score: 86, threshold: 31}, {score: 84, threshold: 30}, {score: 82, threshold: 29}, {score: 80, threshold: 28}, {score: 78, threshold: 27}, {score: 76, threshold: 26}, {score: 75, threshold: 25}, {score: 73, threshold: 24}, {score: 71, threshold: 23}, {score: 69, threshold: 22}, {score: 67, threshold: 21}, {score: 65, threshold: 20}, {score: 63, threshold: 19}, {score: 61, threshold: 18}, {score: 59, threshold: 17}, {score: 57, threshold: 16}, {score: 55, threshold: 15}, {score: 53, threshold: 14}, {score: 50, threshold: 13} ]}
+                },
+                "י": {
+                    "ריצת 2000 מטר": { unit: "דקות", isTime: true, lowerIsBetter: true, grades: [ {score: 100, threshold: "7:30"}, {score: 99, threshold: "7:38"}, {score: 98, threshold: "7:45"}, {score: 97, threshold: "7:52"}, {score: 96, threshold: "7:59"}, {score: 95, threshold: "8:05"}, {score: 94, threshold: "8:11"}, {score: 93, threshold: "8:16"}, {score: 92, threshold: "8:21"}, {score: 91, threshold: "8:28"}, {score: 90, threshold: "8:36"}, {score: 89, threshold: "8:42"}, {score: 88, threshold: "8:48"}, {score: 87, threshold: "8:56"}, {score: 86, threshold: "9:02"}, {score: 85, threshold: "9:09"}, {score: 84, threshold: "9:16"}, {score: 83, threshold: "9:21"}, {score: 82, threshold: "9:28"}, {score: 81, threshold: "9:35"}, {score: 80, threshold: "9:42"}, {score: 79, threshold: "9:52"}, {score: 78, threshold: "10:02"}, {score: 77, threshold: "10:14"}, {score: 76, threshold: "10:22"}, {score: 75, threshold: "10:30"}, {score: 74, threshold: "10:39"}, {score: 73, threshold: "10:48"}, {score: 72, threshold: "10:59"}, {score: 71, threshold: "11:10"}, {score: 70, threshold: "11:20"}, {score: 69, threshold: "11:30"}, {score: 68, threshold: "11:40"}, {score: 67, threshold: "11:55"}, {score: 66, threshold: "12:10"}, {score: 65, threshold: "12:20"}, {score: 64, threshold: "12:30"}, {score: 63, threshold: "12:40"}, {score: 62, threshold: "12:55"}, {score: 61, threshold: "13:10"}, {score: 60, threshold: "13:25"}, {score: 59, threshold: "13:40"}, {score: 58, threshold: "13:55"}, {score: 57, threshold: "14:15"}, {score: 56, threshold: "14:40"}, {score: 55, threshold: "15:10"}, {score: 54, threshold: "15:20"}, {score: 53, threshold: "15:30"}, {score: 52, threshold: "15:40"}, {score: 51, threshold: "15:50"}, {score: 50, threshold: "16:00"} ] },
+                    "ריצת 80 מטר": { unit: "שניות", lowerIsBetter: true, grades: [ {score: 100, threshold: 10.25}, {score: 99, threshold: 10.30}, {score: 98, threshold: 10.35}, {score: 97, threshold: 10.40}, {score: 96, threshold: 10.45}, {score: 95, threshold: 10.50}, {score: 94, threshold: 10.55}, {score: 93, threshold: 10.60}, {score: 92, threshold: 10.65}, {score: 91, threshold: 10.70}, {score: 90, threshold: 10.75}, {score: 89, threshold: 10.80}, {score: 88, threshold: 10.85}, {score: 87, threshold: 10.90}, {score: 86, threshold: 10.95}, {score: 85, threshold: 11.00}, {score: 84, threshold: 11.05}, {score: 83, threshold: 11.10}, {score: 82, threshold: 11.15}, {score: 81, threshold: 11.20}, {score: 80, threshold: 11.25}, {score: 79, threshold: 11.30}, {score: 78, threshold: 11.35}, {score: 77, threshold: 11.40}, {score: 76, threshold: 11.45}, {score: 75, threshold: 11.50}, {score: 74, threshold: 11.55}, {score: 73, threshold: 11.60}, {score: 72, threshold: 11.65}, {score: 71, threshold: 11.70}, {score: 70, threshold: 11.75}, {score: 69, threshold: 11.80}, {score: 68, threshold: 11.85}, {score: 67, threshold: 11.90}, {score: 66, threshold: 11.95}, {score: 65, threshold: 12.00}, {score: 64, threshold: 12.05}, {score: 63, threshold: 12.10}, {score: 62, threshold: 12.15}, {score: 61, threshold: 12.20}, {score: 60, threshold: 12.25}, {score: 59, threshold: 12.30}, {score: 58, threshold: 12.35}, {score: 57, threshold: 12.40}, {score: 56, threshold: 12.45}, {score: 55, threshold: 12.50}, {score: 54, threshold: 12.55}, {score: 53, threshold: 12.60}, {score: 52, threshold: 12.65}, {score: 51, threshold: 12.70}, {score: 50, threshold: 12.75} ] },
+                    "ריצת 4x10 מטר": { unit: "שניות", lowerIsBetter: true, grades: [ {score: 100, threshold: 9.3}, {score: 99, threshold: 9.4}, {score: 98, threshold: 9.5}, {score: 97, threshold: 9.6}, {score: 96, threshold: 9.7}, {score: 95, threshold: 9.8}, {score: 94, threshold: 9.9}, {score: 93, threshold: 10.0}, {score: 92, threshold: 10.1}, {score: 91, threshold: 10.2}, {score: 90, threshold: 10.3}, {score: 89, threshold: 10.4}, {score: 88, threshold: 10.5}, {score: 87, threshold: 10.6}, {score: 86, threshold: 10.7}, {score: 85, threshold: 10.8}, {score: 84, threshold: 10.9}, {score: 83, threshold: 11.0}, {score: 82, threshold: 11.1}, {score: 81, threshold: 11.2}, {score: 80, threshold: 11.3}, {score: 79, threshold: 11.4}, {score: 78, threshold: 11.5}, {score: 77, threshold: 11.6}, {score: 76, threshold: 11.7}, {score: 75, threshold: 11.8}, {score: 74, threshold: 11.9}, {score: 73, threshold: 12.0}, {score: 72, threshold: 12.1}, {score: 71, threshold: 12.2}, {score: 70, threshold: 12.3}, {score: 69, threshold: 12.4}, {score: 68, threshold: 12.5}, {score: 67, threshold: 12.6}, {score: 66, threshold: 12.7}, {score: 65, threshold: 12.8}, {score: 64, threshold: 12.9}, {score: 63, threshold: 13.0}, {score: 62, threshold: 13.1}, {score: 61, threshold: 13.2}, {score: 60, threshold: 13.3}, {score: 59, threshold: 13.4}, {score: 58, threshold: 13.5}, {score: 57, threshold: 13.6}, {score: 56, threshold: 13.7}, {score: 55, threshold: 13.8}, {score: 54, threshold: 14.0}, {score: 53, threshold: 14.2}, {score: 52, threshold: 14.6}, {score: 51, threshold: 14.8}, {score: 50, threshold: 15.0} ] },
+                    "קפיצה למרחק מהמקום": { unit: "ס\"מ", lowerIsBetter: false, grades: [ {score: 100, threshold: 230}, {score: 99, threshold: 228}, {score: 98, threshold: 226}, {score: 97, threshold: 224}, {score: 96, threshold: 222}, {score: 95, threshold: 220}, {score: 94, threshold: 218}, {score: 93, threshold: 216}, {score: 92, threshold: 214}, {score: 91, threshold: 212}, {score: 90, threshold: 210}, {score: 89, threshold: 208}, {score: 88, threshold: 206}, {score: 87, threshold: 204}, {score: 86, threshold: 202}, {score: 85, threshold: 200}, {score: 84, threshold: 198}, {score: 83, threshold: 196}, {score: 82, threshold: 194}, {score: 81, threshold: 192}, {score: 80, threshold: 190}, {score: 79, threshold: 188}, {score: 78, threshold: 186}, {score: 77, threshold: 184}, {score: 76, threshold: 182}, {score: 75, threshold: 180}, {score: 74, threshold: 178}, {score: 73, threshold: 176}, {score: 72, threshold: 174}, {score: 71, threshold: 172}, {score: 70, threshold: 170}, {score: 69, threshold: 168}, {score: 68, threshold: 166}, {score: 67, threshold: 164}, {score: 66, threshold: 162}, {score: 65, threshold: 160}, {score: 64, threshold: 157}, {score: 63, threshold: 154}, {score: 62, threshold: 151}, {score: 61, threshold: 147}, {score: 60, threshold: 144}, {score: 59, threshold: 141}, {score: 58, threshold: 138}, {score: 57, threshold: 134}, {score: 56, threshold: 129}, {score: 55, threshold: 125}, {score: 54, threshold: 121}, {score: 53, threshold: 117}, {score: 52, threshold: 113}, {score: 51, threshold: 109}, {score: 50, threshold: 105} ] },
+                    "כפיפות בטן": { unit: "חזרות", lowerIsBetter: false, grades: [ {score: 100, threshold: 85}, {score: 99, threshold: 84}, {score: 98, threshold: 83}, {score: 97, threshold: 82}, {score: 96, threshold: 81}, {score: 95, threshold: 80}, {score: 94, threshold: 79}, {score: 93, threshold: 78}, {score: 92, threshold: 77}, {score: 91, threshold: 76}, {score: 90, threshold: 75}, {score: 89, threshold: 74}, {score: 88, threshold: 73}, {score: 87, threshold: 72}, {score: 86, threshold: 71}, {score: 85, threshold: 70}, {score: 84, threshold: 69}, {score: 83, threshold: 68}, {score: 82, threshold: 67}, {score: 81, threshold: 65}, {score: 80, threshold: 64}, {score: 79, threshold: 63}, {score: 78, threshold: 62}, {score: 77, threshold: 61}, {score: 76, threshold: 60}, {score: 75, threshold: 59}, {score: 74, threshold: 58}, {score: 73, threshold: 57}, {score: 72, threshold: 56}, {score: 71, threshold: 55}, {score: 70, threshold: 54}, {score: 69, threshold: 53}, {score: 68, threshold: 52}, {score: 67, threshold: 51}, {score: 66, threshold: 50}, {score: 65, threshold: 48}, {score: 64, threshold: 46}, {score: 63, threshold: 44}, {score: 62, threshold: 42}, {score: 61, threshold: 40}, {score: 60, threshold: 38}, {score: 59, threshold: 36}, {score: 58, threshold: 34}, {score: 57, threshold: 32}, {score: 56, threshold: 31}, {score: 55, threshold: 30}, {score: 54, threshold: 29}, {score: 53, threshold: 28}, {score: 52, threshold: 27}, {score: 51, threshold: 26}, {score: 50, threshold: 25} ] },
+                    "מתח": { unit: "חזרות", lowerIsBetter: false, grades: [ {score: 100, threshold: 17}, {score: 98, threshold: 16}, {score: 95, threshold: 15}, {score: 92, threshold: 14}, {score: 89, threshold: 13}, {score: 86, threshold: 12}, {score: 83, threshold: 11}, {score: 80, threshold: 10}, {score: 77, threshold: 9}, {score: 74, threshold: 8}, {score: 71, threshold: 7}, {score: 68, threshold: 6}, {score: 65, threshold: 5}, {score: 62, threshold: 4}, {score: 58, threshold: 3}, {score: 55, threshold: 2}, {score: 50, threshold: 1} ] },
+                    "דילגית": { unit: "קפיצות", lowerIsBetter: false, grades: [ {score: 100, threshold: 145}, {score: 99, threshold: 143}, {score: 98, threshold: 141}, {score: 97, threshold: 139}, {score: 96, threshold: 137}, {score: 95, threshold: 135}, {score: 94, threshold: 133}, {score: 93, threshold: 131}, {score: 92, threshold: 129}, {score: 91, threshold: 127}, {score: 90, threshold: 125}, {score: 89, threshold: 123}, {score: 88, threshold: 121}, {score: 87, threshold: 119}, {score: 86, threshold: 117}, {score: 85, threshold: 115}, {score: 84, threshold: 114}, {score: 83, threshold: 112}, {score: 82, threshold: 110}, {score: 81, threshold: 108}, {score: 80, threshold: 106}, {score: 79, threshold: 104}, {score: 78, threshold: 102}, {score: 77, threshold: 100}, {score: 76, threshold: 99}, {score: 75, threshold: 98}, {score: 74, threshold: 97}, {score: 73, threshold: 96}, {score: 72, threshold: 95}, {score: 71, threshold: 94}, {score: 70, threshold: 93}, {score: 69, threshold: 90}, {score: 68, threshold: 88}, {score: 67, threshold: 86}, {score: 66, threshold: 84}, {score: 65, threshold: 82}, {score: 64, threshold: 80}, {score: 63, threshold: 78}, {score: 62, threshold: 76}, {score: 61, threshold: 74}, {score: 60, threshold: 72}, {score: 59, threshold: 70}, {score: 58, threshold: 69}, {score: 57, threshold: 67}, {score: 56, threshold: 66}, {score: 55, threshold: 65}, {score: 54, threshold: 64}, {score: 53, threshold: 63}, {score: 52, threshold: 62}, {score: 51, threshold: 61}, {score: 50, threshold: 60} ] }
+                },
+                "יא": {
+                    "ריצת 2000 מטר": { unit: "דקות", isTime: true, lowerIsBetter: true, grades: [ {score: 100, threshold: "7:10"}, {score: 99, threshold: "7:18"}, {score: 98, threshold: "7:25"}, {score: 97, threshold: "7:32"}, {score: 96, threshold: "7:39"}, {score: 95, threshold: "7:45"}, {score: 94, threshold: "7:52"}, {score: 93, threshold: "7:59"}, {score: 92, threshold: "8:05"}, {score: 91, threshold: "8:12"}, {score: 90, threshold: "8:22"}, {score: 89, threshold: "8:29"}, {score: 88, threshold: "8:38"}, {score: 87, threshold: "8:46"}, {score: 86, threshold: "8:53"}, {score: 85, threshold: "9:00"}, {score: 84, threshold: "9:07"}, {score: 83, threshold: "9:14"}, {score: 82, threshold: "9:21"}, {score: 81, threshold: "9:28"}, {score: 80, threshold: "9:35"}, {score: 79, threshold: "9:45"}, {score: 78, threshold: "9:55"}, {score: 77, threshold: "10:05"}, {score: 76, threshold: "10:15"}, {score: 75, threshold: "10:25"}, {score: 74, threshold: "10:35"}, {score: 73, threshold: "10:45"}, {score: 72, threshold: "10:55"}, {score: 71, threshold: "11:05"}, {score: 70, threshold: "11:15"}, {score: 69, threshold: "11:25"}, {score: 68, threshold: "11:35"}, {score: 67, threshold: "11:50"}, {score: 66, threshold: "12:05"}, {score: 65, threshold: "12:20"}, {score: 64, threshold: "12:35"}, {score: 63, threshold: "12:50"}, {score: 62, threshold: "13:05"}, {score: 61, threshold: "13:25"}, {score: 60, threshold: "13:45"}, {score: 59, threshold: "14:00"}, {score: 58, threshold: "14:20"}, {score: 57, threshold: "14:35"}, {score: 56, threshold: "14:50"}, {score: 55, threshold: "15:00"}, {score: 54, threshold: "15:20"}, {score: 53, threshold: "15:35"}, {score: 52, threshold: "15:50"}, {score: 51, threshold: "16:00"}, {score: 50, threshold: "16:10"} ] },
+                    "ריצת 80 מטר": { unit: "שניות", lowerIsBetter: true, grades: [ {score: 100, threshold: 10.10}, {score: 99, threshold: 10.15}, {score: 98, threshold: 10.20}, {score: 97, threshold: 10.25}, {score: 96, threshold: 10.30}, {score: 95, threshold: 10.35}, {score: 94, threshold: 10.40}, {score: 93, threshold: 10.45}, {score: 92, threshold: 10.50}, {score: 91, threshold: 10.55}, {score: 90, threshold: 10.60}, {score: 89, threshold: 10.65}, {score: 88, threshold: 10.70}, {score: 87, threshold: 10.75}, {score: 86, threshold: 10.80}, {score: 85, threshold: 10.85}, {score: 84, threshold: 10.90}, {score: 83, threshold: 10.95}, {score: 82, threshold: 11.00}, {score: 81, threshold: 11.05}, {score: 80, threshold: 11.10}, {score: 79, threshold: 11.15}, {score: 78, threshold: 11.20}, {score: 77, threshold: 11.25}, {score: 76, threshold: 11.30}, {score: 75, threshold: 11.35}, {score: 74, threshold: 11.40}, {score: 73, threshold: 11.45}, {score: 72, threshold: 11.50}, {score: 71, threshold: 11.55}, {score: 70, threshold: 11.60}, {score: 69, threshold: 11.65}, {score: 68, threshold: 11.70}, {score: 67, threshold: 11.75}, {score: 66, threshold: 11.80}, {score: 65, threshold: 11.85}, {score: 64, threshold: 11.90}, {score: 63, threshold: 11.95}, {score: 62, threshold: 12.00}, {score: 61, threshold: 12.05}, {score: 60, threshold: 12.10}, {score: 59, threshold: 12.15}, {score: 58, threshold: 12.20}, {score: 57, threshold: 12.25}, {score: 56, threshold: 12.30}, {score: 55, threshold: 12.35}, {score: 54, threshold: 12.40}, {score: 53, threshold: 12.45}, {score: 52, threshold: 12.50}, {score: 51, threshold: 12.55}, {score: 50, threshold: 12.60} ] },
+                    "ריצת 4x10 מטר": { unit: "שניות", lowerIsBetter: true, grades: [ {score: 100, threshold: 9.0}, {score: 99, threshold: 9.1}, {score: 98, threshold: 9.2}, {score: 97, threshold: 9.3}, {score: 96, threshold: 9.4}, {score: 95, threshold: 9.5}, {score: 94, threshold: 9.6}, {score: 93, threshold: 9.7}, {score: 92, threshold: 9.8}, {score: 91, threshold: 9.9}, {score: 90, threshold: 10.0}, {score: 89, threshold: 10.1}, {score: 88, threshold: 10.2}, {score: 87, threshold: 10.3}, {score: 86, threshold: 10.4}, {score: 85, threshold: 10.5}, {score: 84, threshold: 10.6}, {score: 83, threshold: 10.7}, {score: 82, threshold: 10.8}, {score: 81, threshold: 10.9}, {score: 80, threshold: 11.0}, {score: 79, threshold: 11.1}, {score: 78, threshold: 11.2}, {score: 77, threshold: 11.3}, {score: 76, threshold: 11.4}, {score: 75, threshold: 11.5}, {score: 74, threshold: 11.6}, {score: 73, threshold: 11.7}, {score: 72, threshold: 11.8}, {score: 71, threshold: 11.9}, {score: 70, threshold: 12.0}, {score: 69, threshold: 12.1}, {score: 68, threshold: 12.2}, {score: 67, threshold: 12.3}, {score: 66, threshold: 12.4}, {score: 65, threshold: 12.5}, {score: 64, threshold: 12.6}, {score: 63, threshold: 12.7}, {score: 62, threshold: 12.8}, {score: 61, threshold: 12.9}, {score: 60, threshold: 13.0}, {score: 59, threshold: 13.1}, {score: 58, threshold: 13.2}, {score: 57, threshold: 13.3}, {score: 56, threshold: 13.4}, {score: 55, threshold: 13.5}, {score: 54, threshold: 13.6}, {score: 53, threshold: 13.7}, {score: 52, threshold: 13.8}, {score: 51, threshold: 13.9}, {score: 50, threshold: 14.0} ] },
+                    "קפיצה למרחק מהמקום": { unit: "ס\"מ", lowerIsBetter: false, grades: [ {score: 100, threshold: 240}, {score: 99, threshold: 238}, {score: 98, threshold: 236}, {score: 97, threshold: 234}, {score: 96, threshold: 232}, {score: 95, threshold: 230}, {score: 94, threshold: 228}, {score: 93, threshold: 226}, {score: 92, threshold: 224}, {score: 91, threshold: 222}, {score: 90, threshold: 200}, {score: 89, threshold: 198}, {score: 88, threshold: 196}, {score: 87, threshold: 194}, {score: 86, threshold: 192}, {score: 85, threshold: 190}, {score: 84, threshold: 188}, {score: 83, threshold: 186}, {score: 82, threshold: 184}, {score: 81, threshold: 182}, {score: 80, threshold: 180}, {score: 79, threshold: 178}, {score: 78, threshold: 176}, {score: 77, threshold: 174}, {score: 76, threshold: 172}, {score: 75, threshold: 170}, {score: 74, threshold: 168}, {score: 73, threshold: 166}, {score: 72, threshold: 164}, {score: 71, threshold: 162}, {score: 70, threshold: 160}, {score: 69, threshold: 157}, {score: 68, threshold: 154}, {score: 67, threshold: 152}, {score: 66, threshold: 150}, {score: 65, threshold: 148}, {score: 64, threshold: 146}, {score: 63, threshold: 144}, {score: 62, threshold: 143}, {score: 61, threshold: 142}, {score: 60, threshold: 141}, {score: 59, threshold: 140}, {score: 58, threshold: 138}, {score: 57, threshold: 137}, {score: 56, threshold: 136}, {score: 55, threshold: 135}, {score: 54, threshold: 132}, {score: 53, threshold: 130}, {score: 52, threshold: 128}, {score: 51, threshold: 126}, {score: 50, threshold: 124} ] },
+                    "כפיפות בטן": { unit: "חזרות", lowerIsBetter: false, grades: [ {score: 100, threshold: 90}, {score: 99, threshold: 89}, {score: 98, threshold: 88}, {score: 97, threshold: 87}, {score: 96, threshold: 86}, {score: 95, threshold: 85}, {score: 94, threshold: 84}, {score: 93, threshold: 83}, {score: 92, threshold: 82}, {score: 91, threshold: 81}, {score: 90, threshold: 80}, {score: 89, threshold: 79}, {score: 88, threshold: 78}, {score: 87, threshold: 77}, {score: 86, threshold: 76}, {score: 85, threshold: 75}, {score: 84, threshold: 74}, {score: 83, threshold: 73}, {score: 82, threshold: 72}, {score: 81, threshold: 70}, {score: 80, threshold: 69}, {score: 79, threshold: 68}, {score: 78, threshold: 67}, {score: 77, threshold: 66}, {score: 76, threshold: 65}, {score: 75, threshold: 64}, {score: 74, threshold: 63}, {score: 73, threshold: 61}, {score: 72, threshold: 60}, {score: 71, threshold: 59}, {score: 70, threshold: 58}, {score: 69, threshold: 57}, {score: 68, threshold: 56}, {score: 67, threshold: 54}, {score: 66, threshold: 52}, {score: 65, threshold: 50}, {score: 64, threshold: 48}, {score: 63, threshold: 46}, {score: 62, threshold: 45}, {score: 61, threshold: 44}, {score: 60, threshold: 43}, {score: 59, threshold: 41}, {score: 58, threshold: 39}, {score: 57, threshold: 37}, {score: 56, threshold: 35}, {score: 55, threshold: 33}, {score: 54, threshold: 31}, {score: 53, threshold: 29}, {score: 52, threshold: 27}, {score: 51, threshold: 25}, {score: 50, threshold: 23} ] },
+                    "מתח": { unit: "חזרות", lowerIsBetter: false, grades: [ {score: 100, threshold: 20}, {score: 98, threshold: 19}, {score: 96, threshold: 18}, {score: 94, threshold: 17}, {score: 92, threshold: 16}, {score: 89, threshold: 15}, {score: 86, threshold: 14}, {score: 83, threshold: 13}, {score: 80, threshold: 12}, {score: 77, threshold: 11}, {score: 74, threshold: 10}, {score: 71, threshold: 9}, {score: 68, threshold: 8}, {score: 65, threshold: 7}, {score: 62, threshold: 6}, {score: 59, threshold: 5}, {score: 57, threshold: 4}, {score: 55, threshold: 3}, {score: 53, threshold: 2}, {score: 51, threshold: 1}, {score: 50, threshold: 0} ] },
+                    "דילגית": { unit: "קפיצות", lowerIsBetter: false, grades: [ {score: 100, threshold: 150}, {score: 99, threshold: 148}, {score: 98, threshold: 146}, {score: 97, threshold: 144}, {score: 96, threshold: 142}, {score: 95, threshold: 140}, {score: 94, threshold: 138}, {score: 93, threshold: 136}, {score: 92, threshold: 134}, {score: 91, threshold: 132}, {score: 90, threshold: 130}, {score: 89, threshold: 128}, {score: 88, threshold: 126}, {score: 87, threshold: 124}, {score: 86, threshold: 122}, {score: 85, threshold: 120}, {score: 84, threshold: 119}, {score: 83, threshold: 117}, {score: 82, threshold: 115}, {score: 81, threshold: 113}, {score: 80, threshold: 111}, {score: 79, threshold: 109}, {score: 78, threshold: 107}, {score: 77, threshold: 105}, {score: 76, threshold: 103}, {score: 75, threshold: 101}, {score: 74, threshold: 100}, {score: 73, threshold: 99}, {score: 72, threshold: 98}, {score: 71, threshold: 97}, {score: 70, threshold: 96}, {score: 69, threshold: 95}, {score: 68, threshold: 94}, {score: 67, threshold: 92}, {score: 66, threshold: 90}, {score: 65, threshold: 89}, {score: 64, threshold: 88}, {score: 63, threshold: 87}, {score: 62, threshold: 86}, {score: 61, threshold: 85}, {score: 60, threshold: 83}, {score: 59, threshold: 80}, {score: 58, threshold: 77}, {score: 57, threshold: 75}, {score: 56, threshold: 72}, {score: 55, threshold: 70}, {score: 54, threshold: 69}, {score: 53, threshold: 68}, {score: 52, threshold: 67}, {score: 51, threshold: 66}, {score: 50, threshold: 65} ] }
+                },
+                "יב": {
+                    "ריצת 2000 מטר": { unit: "דקות", isTime: true, lowerIsBetter: true, grades: [ {score: 100, threshold: "7:00"}, {score: 99, threshold: "7:08"}, {score: 98, threshold: "7:16"}, {score: 97, threshold: "7:22"}, {score: 96, threshold: "7:30"}, {score: 95, threshold: "7:38"}, {score: 94, threshold: "7:46"}, {score: 93, threshold: "7:55"}, {score: 92, threshold: "8:04"}, {score: 91, threshold: "8:12"}, {score: 90, threshold: "8:19"}, {score: 89, threshold: "8:28"}, {score: 88, threshold: "8:36"}, {score: 87, threshold: "8:45"}, {score: 86, threshold: "8:53"}, {score: 85, threshold: "9:00"}, {score: 84, threshold: "9:08"}, {score: 83, threshold: "9:17"}, {score: 82, threshold: "9:26"}, {score: 81, threshold: "9:35"}, {score: 80, threshold: "9:44"}, {score: 79, threshold: "9:53"}, {score: 78, threshold: "10:00"}, {score: 77, threshold: "10:10"}, {score: 76, threshold: "10:20"}, {score: 75, threshold: "10:30"}, {score: 74, threshold: "10:40"}, {score: 73, threshold: "10:50"}, {score: 72, threshold: "11:00"}, {score: 71, threshold: "11:10"}, {score: 70, threshold: "11:20"}, {score: 69, threshold: "11:30"}, {score: 68, threshold: "11:40"}, {score: 67, threshold: "11:50"}, {score: 66, threshold: "12:00"}, {score: 65, threshold: "12:10"}, {score: 64, threshold: "12:20"}, {score: 63, threshold: "12:30"}, {score: 62, threshold: "12:40"}, {score: 61, threshold: "12:50"}, {score: 60, threshold: "13:00"}, {score: 59, threshold: "13:20"}, {score: 58, threshold: "13:40"}, {score: 57, threshold: "14:00"}, {score: 56, threshold: "14:25"}, {score: 55, threshold: "14:50"}, {score: 54, threshold: "15:10"}, {score: 53, threshold: "15:25"}, {score: 52, threshold: "15:40"}, {score: 51, threshold: "15:55"}, {score: 50, threshold: "16:10"} ] },
+                    "ריצת 80 מטר": { unit: "שניות", lowerIsBetter: true, grades: [ {score: 100, threshold: 10.00}, {score: 99, threshold: 10.05}, {score: 98, threshold: 10.10}, {score: 97, threshold: 10.15}, {score: 96, threshold: 10.20}, {score: 95, threshold: 10.25}, {score: 94, threshold: 10.30}, {score: 93, threshold: 10.35}, {score: 92, threshold: 10.40}, {score: 91, threshold: 10.45}, {score: 90, threshold: 10.50}, {score: 89, threshold: 10.55}, {score: 88, threshold: 10.60}, {score: 87, threshold: 10.65}, {score: 86, threshold: 10.70}, {score: 85, threshold: 10.75}, {score: 84, threshold: 10.80}, {score: 83, threshold: 10.85}, {score: 82, threshold: 10.90}, {score: 81, threshold: 10.95}, {score: 80, threshold: 11.00}, {score: 79, threshold: 11.05}, {score: 78, threshold: 11.10}, {score: 77, threshold: 11.15}, {score: 76, threshold: 11.20}, {score: 75, threshold: 11.25}, {score: 74, threshold: 11.30}, {score: 73, threshold: 11.35}, {score: 72, threshold: 11.40}, {score: 71, threshold: 11.45}, {score: 70, threshold: 11.50}, {score: 69, threshold: 11.55}, {score: 68, threshold: 11.60}, {score: 67, threshold: 11.65}, {score: 66, threshold: 11.70}, {score: 65, threshold: 11.75}, {score: 64, threshold: 11.80}, {score: 63, threshold: 11.85}, {score: 62, threshold: 11.90}, {score: 61, threshold: 11.95}, {score: 60, threshold: 12.00}, {score: 59, threshold: 12.05}, {score: 58, threshold: 12.10}, {score: 57, threshold: 12.15}, {score: 56, threshold: 12.20}, {score: 55, threshold: 12.25}, {score: 54, threshold: 12.30}, {score: 53, threshold: 12.35}, {score: 52, threshold: 12.40}, {score: 51, threshold: 12.45}, {score: 50, threshold: 12.50} ] },
+                    "ריצת 4x10 מטר": { unit: "שניות", lowerIsBetter: true, grades: [ {score: 100, threshold: 8.7}, {score: 99, threshold: 8.8}, {score: 98, threshold: 8.9}, {score: 97, threshold: 9.0}, {score: 96, threshold: 9.1}, {score: 95, threshold: 9.2}, {score: 94, threshold: 9.3}, {score: 93, threshold: 9.4}, {score: 92, threshold: 9.5}, {score: 91, threshold: 9.6}, {score: 90, threshold: 9.7}, {score: 89, threshold: 9.8}, {score: 88, threshold: 9.9}, {score: 87, threshold: 10.0}, {score: 86, threshold: 10.1}, {score: 85, threshold: 10.2}, {score: 84, threshold: 10.3}, {score: 83, threshold: 10.4}, {score: 82, threshold: 10.5}, {score: 81, threshold: 10.6}, {score: 80, threshold: 10.7}, {score: 79, threshold: 10.8}, {score: 78, threshold: 10.9}, {score: 77, threshold: 11.0}, {score: 76, threshold: 11.1}, {score: 75, threshold: 11.2}, {score: 74, threshold: 11.3}, {score: 73, threshold: 11.4}, {score: 72, threshold: 11.5}, {score: 71, threshold: 11.6}, {score: 70, threshold: 11.7}, {score: 69, threshold: 11.8}, {score: 68, threshold: 11.9}, {score: 67, threshold: 12.0}, {score: 66, threshold: 12.1}, {score: 65, threshold: 12.2}, {score: 64, threshold: 12.3}, {score: 63, threshold: 12.4}, {score: 62, threshold: 12.5}, {score: 61, threshold: 12.6}, {score: 60, threshold: 12.7}, {score: 59, threshold: 12.8}, {score: 58, threshold: 12.9}, {score: 57, threshold: 13.0}, {score: 56, threshold: 13.1}, {score: 55, threshold: 13.2}, {score: 54, threshold: 13.3}, {score: 53, threshold: 13.4}, {score: 52, threshold: 13.5}, {score: 51, threshold: 13.6}, {score: 50, threshold: 13.7} ] },
+                    "קפיצה למרחק מהמקום": { unit: "ס\"מ", lowerIsBetter: false, grades: [ {score: 100, threshold: 245}, {score: 99, threshold: 243}, {score: 98, threshold: 241}, {score: 97, threshold: 239}, {score: 96, threshold: 237}, {score: 95, threshold: 235}, {score: 94, threshold: 233}, {score: 93, threshold: 231}, {score: 92, threshold: 229}, {score: 91, threshold: 227}, {score: 90, threshold: 225}, {score: 89, threshold: 223}, {score: 88, threshold: 221}, {score: 87, threshold: 219}, {score: 86, threshold: 217}, {score: 85, threshold: 215}, {score: 84, threshold: 213}, {score: 83, threshold: 211}, {score: 82, threshold: 209}, {score: 81, threshold: 207}, {score: 80, threshold: 205}, {score: 79, threshold: 203}, {score: 78, threshold: 201}, {score: 77, threshold: 199}, {score: 76, threshold: 197}, {score: 75, threshold: 195}, {score: 74, threshold: 193}, {score: 73, threshold: 191}, {score: 72, threshold: 189}, {score: 71, threshold: 187}, {score: 70, threshold: 185}, {score: 69, threshold: 182}, {score: 68, threshold: 180}, {score: 67, threshold: 177}, {score: 66, threshold: 174}, {score: 65, threshold: 171}, {score: 64, threshold: 168}, {score: 63, threshold: 165}, {score: 62, threshold: 162}, {score: 61, threshold: 159}, {score: 60, threshold: 156}, {score: 59, threshold: 152}, {score: 58, threshold: 148}, {score: 57, threshold: 145}, {score: 56, threshold: 142}, {score: 55, threshold: 140}, {score: 54, threshold: 138}, {score: 53, threshold: 136}, {score: 52, threshold: 134}, {score: 51, threshold: 132}, {score: 50, threshold: 130} ] },
+                    "כפיפות בטן": { unit: "חזרות", lowerIsBetter: false, grades: [ {score: 100, threshold: 95}, {score: 99, threshold: 94}, {score: 98, threshold: 93}, {score: 97, threshold: 92}, {score: 96, threshold: 91}, {score: 95, threshold: 90}, {score: 94, threshold: 89}, {score: 93, threshold: 88}, {score: 92, threshold: 87}, {score: 91, threshold: 86}, {score: 90, threshold: 85}, {score: 89, threshold: 84}, {score: 88, threshold: 83}, {score: 87, threshold: 82}, {score: 86, threshold: 81}, {score: 85, threshold: 80}, {score: 79, threshold: 74}, {score: 78, threshold: 73}, {score: 77, threshold: 72}, {score: 76, threshold: 71}, {score: 75, threshold: 70}, {score: 74, threshold: 68}, {score: 73, threshold: 67}, {score: 72, threshold: 66}, {score: 71, threshold: 65}, {score: 70, threshold: 64}, {score: 69, threshold: 63}, {score: 68, threshold: 62}, {score: 67, threshold: 61}, {score: 66, threshold: 60}, {score: 65, threshold: 58}, {score: 64, threshold: 56}, {score: 63, threshold: 54}, {score: 62, threshold: 52}, {score: 61, threshold: 50}, {score: 60, threshold: 48}, {score: 59, threshold: 46}, {score: 58, threshold: 44}, {score: 57, threshold: 41}, {score: 56, threshold: 38}, {score: 55, threshold: 35}, {score: 54, threshold: 34}, {score: 53, threshold: 33}, {score: 52, threshold: 32}, {score: 51, threshold: 31}, {score: 50, threshold: 30} ] },
+                    "מתח": { unit: "חזרות", lowerIsBetter: false, grades: [ {score: 100, threshold: 22}, {score: 98, threshold: 20}, {score: 96, threshold: 19}, {score: 95, threshold: 18}, {score: 93, threshold: 17}, {score: 91, threshold: 16}, {score: 88, threshold: 15}, {score: 85, threshold: 14}, {score: 82, threshold: 13}, {score: 79, threshold: 12}, {score: 76, threshold: 11}, {score: 73, threshold: 10}, {score: 70, threshold: 9}, {score: 67, threshold: 8}, {score: 64, threshold: 7}, {score: 61, threshold: 6}, {score: 58, threshold: 5}, {score: 55, threshold: 4}, {score: 54, threshold: 3}, {score: 52, threshold: 2}, {score: 50, threshold: 1} ] },
+                    "דילגית": { unit: "קפיצות", lowerIsBetter: false, grades: [ {score: 100, threshold: 155}, {score: 99, threshold: 153}, {score: 98, threshold: 151}, {score: 97, threshold: 149}, {score: 96, threshold: 147}, {score: 95, threshold: 145}, {score: 94, threshold: 143}, {score: 93, threshold: 141}, {score: 92, threshold: 139}, {score: 91, threshold: 137}, {score: 90, threshold: 135}, {score: 89, threshold: 133}, {score: 88, threshold: 131}, {score: 87, threshold: 129}, {score: 86, threshold: 127}, {score: 85, threshold: 125}, {score: 84, threshold: 124}, {score: 83, threshold: 122}, {score: 82, threshold: 120}, {score: 81, threshold: 118}, {score: 80, threshold: 116}, {score: 79, threshold: 114}, {score: 78, threshold: 112}, {score: 77, threshold: 110}, {score: 76, threshold: 108}, {score: 75, threshold: 106}, {score: 74, threshold: 104}, {score: 73, threshold: 102}, {score: 72, threshold: 101}, {score: 71, threshold: 100}, {score: 70, threshold: 99}, {score: 69, threshold: 98}, {score: 68, threshold: 97}, {score: 67, threshold: 96}, {score: 66, threshold: 95}, {score: 65, threshold: 94}, {score: 64, threshold: 93}, {score: 63, threshold: 92}, {score: 62, threshold: 90}, {score: 61, threshold: 87}, {score: 60, threshold: 84}, {score: 59, threshold: 81}, {score: 58, threshold: 78}, {score: 57, threshold: 77}, {score: 56, threshold: 76}, {score: 55, threshold: 75}, {score: 54, threshold: 74}, {score: 53, threshold: 73}, {score: 52, threshold: 72}, {score: 51, threshold: 71}, {score: 50, threshold: 70} ] }
+                }
+            }
+        };
+
+        // --- DOM ELEMENT VARIABLES ---
+        let form, genderSelect, gradeLevelSelect, classNameSelect, lockFormCheckbox, 
+            firstNameInput, lastNameInput, resultInput, testTypeSelect, unitDisplay, 
+            resultsTbody, exportBtn, clearAllBtn, studentCountEl, averageGradeEl, 
+            dateInput, generateInsightsBtn, openLessonPlanModalBtn, openShareGroupModalBtn, 
+            openReportCardModalBtn, confirmModal, confirmModalTitle, confirmModalMessage,
+            aiModal, aiModalTitle, aiModalLoader, aiModalContent, aiModalCloseBtn,
+            lessonPlanModal, lessonPlanForm, lessonPlanCancelBtn, shareGroupModal,
+            shareGroupForm, shareGroupCancelBtn, classToShareSelect, testToShareSelect,
+            trainingPlanModal, trainingPlanForm, trainingPlanCancelBtn, trainingPlanStudentInfo,
+            reportCardModal, reportCardForm, reportCardCancelBtn, studentToEvaluateSelect;
+
+        // --- APP STATE ---
+        let records = [];
+        let currentRecordForTraining = null;
+        let confirmCallback = null;
+
+        function setupApp() {
+            // Assign DOM elements now that the main app is visible
+            form = document.getElementById('student-form');
+            genderSelect = document.getElementById('gender');
+            gradeLevelSelect = document.getElementById('grade-level');
+            classNameSelect = document.getElementById('class-name-select');
+            lockFormCheckbox = document.getElementById('lock-form');
+            firstNameInput = document.getElementById('first-name');
+            lastNameInput = document.getElementById('last-name');
+            resultInput = document.getElementById('result');
+            testTypeSelect = document.getElementById('test-type');
+            unitDisplay = document.getElementById('unit-display');
+            resultsTbody = document.getElementById('results-tbody');
+            exportBtn = document.getElementById('export-excel');
+            clearAllBtn = document.getElementById('clear-all');
+            studentCountEl = document.getElementById('student-count');
+            averageGradeEl = document.getElementById('average-grade');
+            dateInput = document.getElementById('test-date');
+            generateInsightsBtn = document.getElementById('generate-insights');
+            openLessonPlanModalBtn = document.getElementById('open-lesson-plan-modal');
+            openShareGroupModalBtn = document.getElementById('open-share-group-modal');
+            openReportCardModalBtn = document.getElementById('open-report-card-modal');
+            confirmModal = document.getElementById('confirm-modal');
+            confirmModalTitle = document.getElementById('confirm-modal-title');
+            confirmModalMessage = document.getElementById('confirm-modal-message');
+            aiModal = document.getElementById('ai-modal');
+            aiModalTitle = document.getElementById('ai-modal-title');
+            aiModalLoader = document.getElementById('ai-modal-loader');
+            aiModalContent = document.getElementById('ai-modal-content');
+            aiModalCloseBtn = document.getElementById('ai-modal-close');
+            lessonPlanModal = document.getElementById('lesson-plan-modal');
+            lessonPlanForm = document.getElementById('lesson-plan-form');
+            lessonPlanCancelBtn = document.getElementById('lesson-plan-cancel');
+            shareGroupModal = document.getElementById('share-group-modal');
+            shareGroupForm = document.getElementById('share-group-form');
+            shareGroupCancelBtn = document.getElementById('share-group-cancel');
+            classToShareSelect = document.getElementById('class-to-share');
+            testToShareSelect = document.getElementById('test-to-share');
+            trainingPlanModal = document.getElementById('training-plan-modal');
+            trainingPlanForm = document.getElementById('training-plan-form');
+            trainingPlanCancelBtn = document.getElementById('training-plan-cancel');
+            trainingPlanStudentInfo = document.getElementById('training-plan-student-info');
+            reportCardModal = document.getElementById('report-card-modal');
+            reportCardForm = document.getElementById('report-card-form');
+            reportCardCancelBtn = document.getElementById('report-card-cancel');
+            studentToEvaluateSelect = document.getElementById('student-to-evaluate');
+
+            setupEventListeners();
+            updateGradeLevels(); // Initial population
+            setDateToToday();
+        }
+
+        // --- DATA HANDLING ---
+        function addRecord(record) {
+            records.push(record);
+            renderTable();
+        }
+        
+        function deleteRecord(recordId) {
+            records = records.filter(r => r.id !== recordId);
+            renderTable();
+        }
+        
+        function clearAllRecords() {
+            records = [];
+            renderTable();
+        }
+
+        // --- UI & RENDERING ---
+        function updateGradeLevels() {
+            const gender = genderSelect.value;
+            const currentGrade = gradeLevelSelect.value;
+            gradeLevelSelect.innerHTML = '';
+
+            const gradesToShow = (gender === 'בנים') 
+                ? ['ז', 'ח', 'ט', 'י', 'יא', 'יב'] 
+                : ['י', 'יא', 'יב'];
+
+            gradesToShow.forEach(grade => {
+                const option = document.createElement('option');
+                option.value = grade;
+                let displayText = grade;
+                if (grade === 'ז') displayText = "ז'";
+                if (grade === 'ח') displayText = "ח'";
+                if (grade === 'ט') displayText = "ט'";
+                if (grade === 'י') displayText = "י'";
+                if (grade === 'יא') displayText = 'י"א';
+                if (grade === 'יב') displayText = 'י"ב';
+                option.textContent = displayText;
+                gradeLevelSelect.appendChild(option);
+            });
+
+            if (gradesToShow.includes(currentGrade)) {
+                gradeLevelSelect.value = currentGrade;
+            }
+            
+            updateTestTypes();
+            updateClassOptions();
+        }
+
+        function updateClassOptions() {
+            const grade = gradeLevelSelect.value;
+            classNameSelect.innerHTML = '';
+
+            if (CLASSES_PER_GRADE[grade]) {
+                for (let i = 1; i <= CLASSES_PER_GRADE[grade]; i++) {
+                    const option = document.createElement('option');
+                    const className = `${grade}'${i}`;
+                    option.value = className;
+                    option.textContent = className;
+                    classNameSelect.appendChild(option);
+                }
+            }
+        }
+
+        function updateTestTypes() {
+            const gender = genderSelect.value;
+            const grade = gradeLevelSelect.value;
+            
+            const tests = GRADING_DATA[gender]?.[grade] || {};
+            
+            testTypeSelect.innerHTML = '';
+            if (Object.keys(tests).length === 0) {
+                const option = document.createElement('option');
+                option.textContent = 'לא נמצאו מבחנים';
+                option.disabled = true;
+                testTypeSelect.appendChild(option);
+            } else {
+                Object.keys(tests).forEach(testName => {
+                    const option = document.createElement('option');
+                    option.value = testName;
+                    option.textContent = testName;
+                    testTypeSelect.appendChild(option);
+                });
+            }
+            updateUnitDisplay();
+        }
+
+        function updateUnitDisplay() {
+            const gender = genderSelect.value;
+            const grade = gradeLevelSelect.value;
+            const testType = testTypeSelect.value;
+            
+            const testInfo = GRADING_DATA[gender]?.[grade]?.[testType];
+            unitDisplay.textContent = testInfo ? testInfo.unit : '';
+        }
+
+        function setDateToToday() {
+            dateInput.value = new Date().toISOString().split('T')[0];
+        }
+
+        function renderTable() {
+            resultsTbody.innerHTML = '';
+            if (records.length === 0) {
+                resultsTbody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-slate-500">לא נמצאו רשומות.</td></tr>`;
+            } else {
+                records.forEach(record => {
+                    const row = document.createElement('tr');
+                    let rowClass = 'hover:bg-slate-50';
+                    if (record.grade >= 90) {
+                        rowClass = 'bg-green-50 hover:bg-green-100';
+                    } else if (record.grade < 65) {
+                        rowClass = 'bg-red-50 hover:bg-red-100';
+                    }
+                    row.className = rowClass;
+
+                    const recordString = JSON.stringify(record).replace(/'/g, "&apos;");
+
+                    row.innerHTML = `
+                        <td class="px-6 py-4 whitespace-nowrap">${record.firstName} ${record.lastName}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">${record.gender}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">${record.className}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">${record.testType}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">${record.originalResult}</td>
+                        <td class="px-6 py-4 whitespace-nowrap font-bold ${getGradeColor(record.grade)}">${record.grade}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-center">
+                            <button data-record='${recordString}' title="שתף בוואטסאפ" class="share-whatsapp-btn p-2 rounded-full hover:bg-slate-200 transition">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-500" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.894 11.892-1.99 0-3.903-.52-5.687-1.475L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.447-4.435-9.884-9.888-9.884-5.448 0-9.886 4.434-9.889 9.884-.001 2.225.651 4.315 1.731 6.086l.287.468-1.173 4.249 4.35-1.157.45.272z"/></svg>
+                            </button>
+                            <button data-record='${recordString}' title="הפק משוב AI" class="generate-feedback-btn p-2 rounded-full hover:bg-slate-200 transition">
+                                ✨
+                            </button>
+                            <button data-record='${recordString}' title="הפק תוכנית אימונים" class="generate-training-btn p-2 rounded-full hover:bg-slate-200 transition">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-600" viewBox="0 0 20 20" fill="currentColor"><path d="M10 3.5a.75.75 0 01.75.75V8.5H15a.75.75 0 010 1.5h-4.25V14.5a.75.75 0 01-1.5 0V10H5a.75.75 0 010-1.5h4.25V4.25A.75.75 0 0110 3.5z" clip-rule="evenodd" /></svg>
+                            </button>
+                            <button data-id="${record.id}" title="מחק רשומה" class="delete-btn p-2 rounded-full hover:bg-slate-200 transition">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                            </button>
+                        </td>
+                    `;
+                    resultsTbody.appendChild(row);
+                });
+            }
+            updateSummary();
+        }
+        
+        function updateSummary() {
+            studentCountEl.textContent = records.length;
+            openReportCardModalBtn.disabled = records.length === 0;
+            generateInsightsBtn.disabled = records.length < 3;
+            if (records.length > 0) {
+                const totalGrade = records.reduce((sum, record) => sum + record.grade, 0);
+                averageGradeEl.textContent = (totalGrade / records.length).toFixed(2);
+            } else {
+                averageGradeEl.textContent = '0';
+            }
+        }
+
+        function getGradeColor(grade) {
+            if (grade >= 90) return 'text-green-600';
+            if (grade < 65) return 'text-red-700';
+            return 'text-slate-800';
+        }
+
+        // --- LOGIC ---
+        function parseTimeToSeconds(timeStr) {
+            const parts = String(timeStr).split(/[:.]/); // Split by colon or dot
+            if (parts.length === 2) {
+                const minutes = parseInt(parts[0], 10);
+                const seconds = parseInt(parts[1], 10);
+                if (!isNaN(minutes) && !isNaN(seconds)) {
+                    return (minutes * 60) + seconds;
+                }
+            }
+            return parseFloat(timeStr); // Fallback for simple numbers
+        }
+
+
+        function calculateGrade(gender, grade, testType, result) {
+            const testInfo = GRADING_DATA[gender]?.[grade]?.[testType];
+
+            if (!testInfo || !testInfo.grades || testInfo.grades.length === 0) {
+                return 0;
+            }
+
+            const { grades, lowerIsBetter, isTime } = testInfo;
+            
+            const numericResult = isTime ? parseTimeToSeconds(result) : parseFloat(result);
+            if (isNaN(numericResult)) return 0; // Invalid result format
+
+            if (lowerIsBetter) {
+                for (const gradeInfo of grades) {
+                    const thresholdValue = isTime ? parseTimeToSeconds(gradeInfo.threshold) : gradeInfo.threshold;
+                    if (numericResult <= thresholdValue) {
+                        return gradeInfo.score;
+                    }
+                }
+            } else {
+                for (const gradeInfo of grades) {
+                    const thresholdValue = isTime ? parseTimeToSeconds(gradeInfo.threshold) : gradeInfo.threshold;
+                    if (numericResult >= thresholdValue) {
+                        return gradeInfo.score;
+                    }
+                }
+            }
+            
+            return grades[grades.length - 1].score;
+        }
+
+        function exportToCSV() {
+            if (records.length === 0) {
+                alert("אין נתונים לייצוא.");
+                return;
+            }
+            const headers = ['שם פרטי', 'שם משפחה', 'מין', 'שכבה', 'כיתה', 'סוג מבחן', 'תוצאה', 'תאריך', 'ציון'];
+            const rows = records.map(r => [r.firstName, r.lastName, r.gender, r.gradeLevel, r.className, r.testType, r.originalResult, new Date(r.date).toLocaleDateString('he-IL'), r.grade]);
+            let csvContent = "data:text/csv;charset=utf-8,\uFEFF";
+            csvContent += headers.join(",") + "\r\n";
+            rows.forEach(rowArray => { csvContent += rowArray.join(",") + "\r\n"; });
+            const link = document.createElement("a");
+            link.setAttribute("href", encodeURI(csvContent));
+            link.setAttribute("download", "ציוני_חינוך_גופני.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+        
+        // --- MODAL HANDLING ---
+        function showConfirmModal(title, message, onConfirm) {
+            confirmModalTitle.textContent = title;
+            confirmModalMessage.textContent = message;
+            confirmCallback = onConfirm; // Store the callback
+            confirmModal.classList.remove('hidden');
+        }
+        
+        function showAiModal(title) {
+            aiModalTitle.textContent = title;
+            aiModal.classList.remove('hidden');
+            aiModalLoader.style.display = 'flex';
+            aiModalContent.style.display = 'none';
+            aiModalContent.textContent = '';
+        }
+
+        function displayAiContent(content) {
+            aiModalLoader.style.display = 'none';
+            aiModalContent.style.display = 'block';
+            aiModalContent.textContent = content;
+        }
+
+        // --- GEMINI API & Sharing ---
+        async function callGemini(prompt) {
+            const apiKey = "";
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+            const payload = { contents: [{ role: "user", parts: [{ text: prompt }] }] };
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (!response.ok) {
+                    const errorBody = await response.text();
+                    throw new Error(`API call failed: ${response.status}. Body: ${errorBody}`);
+                }
+                const result = await response.json();
+                if (result.candidates && result.candidates.length > 0 && result.candidates[0].content.parts[0].text) {
+                    return result.candidates[0].content.parts[0].text;
+                } else {
+                    return "לא התקבלה תשובה מהמודל.";
+                }
+            } catch (error) {
+                console.error("Gemini API call error:", error);
+                return "שגיאה ביצירת התשובה.";
+            }
+        }
+        
+        function handleShareToWhatsApp(record) {
+            const message = `היי, הנה התוצאה של ${record.firstName} ${record.lastName}:\n\n` +
+                            `*מבחן:* ${record.testType}\n` +
+                            `*תוצאה:* ${record.originalResult}\n` +
+                            `*ציון:* ${record.grade}\n\n` +
+                            `כל הכבוד על המאמץ!`;
+            const encodedMessage = encodeURIComponent(message);
+            window.open(`https://api.whatsapp.com/send?text=${encodedMessage}`, '_blank');
+        }
+
+        async function handleGenerateFeedback(record) {
+            showAiModal(`מפיק משוב עבור ${record.firstName}...`);
+            const { unit, lowerIsBetter } = GRADING_DATA[record.gender][record.gradeLevel][record.testType];
+            const performanceContext = lowerIsBetter ? "נמוך יותר הוא טוב יותר" : "גבוה יותר הוא טוב יותר";
+            const prompt = `
+            אתה מורה לחינוך גופני. כתוב משוב אישי, חיובי ומעודד לתלמיד/ה בשם ${record.firstName}.
+            המשוב צריך להיות בעברית.
+            
+            פרטי המבחן:
+            - שם התלמיד/ה: ${record.firstName} ${record.lastName}
+            - מין: ${record.gender}
+            - שם המבחן: ${record.testType}
+            - התוצאה שהושגה: ${record.originalResult} ${unit}
+            - הציון שנקבע: ${record.grade} מתוך 100
+            - הערה: במבחן זה, ${performanceContext}.
+
+            מבנה המשוב:
+            1. פתיחה חיובית המכירה במאמץ.
+            2. ניתוח קצר של התוצאה בהקשר למבחן.
+            3. 2-3 טיפים פרקטיים וברורים לשיפור התוצאה בפעם הבאה, מותאמים למין התלמיד/ה במידת הצורך.
+            4. סיום מעודד.
+
+            הקפד על טון חיובי ומכבד.
+            `;
+            const feedback = await callGemini(prompt);
+            displayAiContent(feedback);
+        }
+
+        async function handleGenerateTrainingPlan(e) {
+            e.preventDefault();
+            if (!currentRecordForTraining) return;
+
+            const goal = document.getElementById('training-goal').value;
+            const duration = document.getElementById('training-duration').value;
+            
+            trainingPlanModal.classList.add('hidden');
+            showAiModal(`מפיק תוכנית אימונים עבור ${currentRecordForTraining.firstName}...`);
+
+            const prompt = `
+            אתה מאמן כושר ומורה מנוסה לחינוך גופני. בנה תוכנית אימונים אישית מפורטת בעברית עבור התלמיד/ה.
+
+            פרטי התלמיד/ה והמטרה:
+            - שם: ${currentRecordForTraining.firstName} ${currentRecordForTraining.lastName}
+            - מין: ${currentRecordForTraining.gender}
+            - שכבה: ${currentRecordForTraining.gradeLevel}
+            - מבחן לשיפור: ${currentRecordForTraining.testType}
+            - תוצאה נוכחית: ${currentRecordForTraining.originalResult} (ציון: ${currentRecordForTraining.grade})
+            - מטרת התוכנית: ${goal}
+            - משך התוכנית: ${duration}
+
+            מבנה התוכנית:
+            - יש לחלק את התוכנית לשבועות (לפי משך התוכנית שצוין).
+            - עבור כל שבוע, יש לפרט 2-3 יחידות אימון.
+            - כל יחידת אימון צריכה לכלול:
+                1.  **חימום:** תרגילים ספציפיים.
+                2.  **חלק עיקרי:** תרגילים ממוקדים לשיפור המבחן, עם דגש על טכניקה, חזרות/סטים/זמנים.
+                3.  **שחרור:** תרגילי הרפיה ומתיחות.
+            
+            הקפד על תוכנית הדרגתית, בטיחותית ומותאמת לגיל ולמין של התלמיד/ה.
+            `;
+            const trainingPlan = await callGemini(prompt);
+            displayAiContent(trainingPlan);
+        }
+        
+        async function handleGenerateInsights() {
+            if (records.length < 3) {
+                alert("צריך לפחות 3 רשומות כדי להפיק תובנות.");
+                return;
+            }
+
+            showAiModal('מפיק תובנות כיתתיות...');
+
+            const summaryData = {};
+            const overallGrades = [];
+
+            records.forEach(record => {
+                if (!summaryData[record.testType]) {
+                    summaryData[record.testType] = {
+                        grades: [],
+                        count: 0,
+                    };
+                }
+                summaryData[record.testType].grades.push(record.grade);
+                summaryData[record.testType].count++;
+                overallGrades.push(record.grade);
+            });
+
+            const analysis = Object.keys(summaryData).map(testType => {
+                const grades = summaryData[testType].grades;
+                const average = grades.reduce((a, b) => a + b, 0) / grades.length;
+                return {
+                    test: testType,
+                    averageGrade: parseFloat(average.toFixed(2)),
+                    studentCount: grades.length
+                };
+            });
+
+            const overallAverage = parseFloat((overallGrades.reduce((a, b) => a + b, 0) / overallGrades.length).toFixed(2));
+
+            const processedData = {
+                overallAverageGrade: overallAverage,
+                totalRecords: records.length,
+                analysisByTest: analysis
+            };
+
+            const prompt = `
+            You are an experienced physical education teacher. Analyze the following summarized fitness test data for a class and provide a concise insights report in Hebrew.
+
+            The summarized data (JSON format):
+            ${JSON.stringify(processedData, null, 2)}
+
+            Report Structure:
+            1.  **סיכום כללי:** Describe the overall fitness level of the class based on the 'overallAverageGrade'.
+            2.  **נקודות חוזק:** Based on 'analysisByTest', identify the test with the highest 'averageGrade' as a strength.
+            3.  **תחומים לשיפור:** Based on 'analysisByTest', identify the test with the lowest 'averageGrade' as an area for improvement.
+            4.  **המלצה לפעילות:** Suggest one fun, group activity to improve the identified weak area. Briefly explain how the activity helps.
+
+            Keep the analysis professional, clear, and concise. Write only in Hebrew.
+            `;
+            
+            const insights = await callGemini(prompt);
+            displayAiContent(insights);
+        }
+
+        async function handleGenerateLessonPlan(e) {
+            e.preventDefault();
+            const component = document.getElementById('fitness-component').value;
+            const equipment = document.getElementById('equipment').value || "ללא ציוד מיוחד";
+            const duration = document.getElementById('lesson-duration').value;
+            
+            lessonPlanModal.classList.add('hidden');
+            showAiModal('מפיק מערך שיעור...');
+
+            const prompt = `
+            You are an experienced physical education teacher. Write a detailed and professional lesson plan in Hebrew.
+
+            Lesson Details:
+            - **Main Goal:** Improve the fitness component: ${component}.
+            - **Available Equipment:** ${equipment}.
+            - **Lesson Duration:** ${duration}.
+
+            Lesson Plan Structure (adhere to this structure):
+            1.  **Warm-up** (~10 minutes): Detail 2-3 suitable dynamic warm-up exercises.
+            2.  **Main Part** (~${parseInt(duration) - 20} minutes): Describe 2-3 main exercises, stations, or activities. Explain how each activity improves ${component} and how to use the available equipment.
+            3.  **Concluding Game** (~5 minutes): Suggest a fun game related to the lesson's goal.
+            4.  **Cool-down and Stretching** (~5 minutes): Detail 2-3 static stretching exercises to finish.
+
+            Ensure instructions are clear, safe, and professional.
+            `;
+            const lessonPlan = await callGemini(prompt);
+            displayAiContent(lessonPlan);
+        }
+        
+        function populateShareModal() {
+            const classes = [...new Set(records.map(r => r.className))].sort();
+            const tests = [...new Set(records.map(r => r.testType))].sort();
+
+            classToShareSelect.innerHTML = '<option value="">בחר כיתה</option>';
+            testToShareSelect.innerHTML = '<option value="">בחר מבחן</option>';
+
+            classes.forEach(c => {
+                classToShareSelect.innerHTML += `<option value="${c}">${c}</option>`;
+            });
+            tests.forEach(t => {
+                testToShareSelect.innerHTML += `<option value="${t}">${t}</option>`;
+            });
+        }
+
+        function handleShareGroup(e) {
+            e.preventDefault();
+            const className = classToShareSelect.value;
+            const testType = testToShareSelect.value;
+
+            if (!className || !testType) {
+                alert("יש לבחור כיתה ומבחן לשיתוף.");
+                return;
+            }
+
+            const filteredRecords = records.filter(r => r.className === className && r.testType === testType);
+
+            if (filteredRecords.length === 0) {
+                alert("לא נמצאו נתונים עבור הבחירה שלך.");
+                return;
+            }
+            
+            let message = `*סיכום תוצאות למבחן: ${testType}*\n*כיתה: ${className}*\n\n`;
+            filteredRecords
+                .sort((a, b) => a.lastName.localeCompare(b.lastName))
+                .forEach(r => {
+                    message += `${r.firstName} ${r.lastName}: ${r.originalResult} (ציון: ${r.grade})\n`;
+                });
+            
+            const encodedMessage = encodeURIComponent(message);
+            window.open(`https://api.whatsapp.com/send?text=${encodedMessage}`, '_blank');
+            shareGroupModal.classList.add('hidden');
+        }
+
+        function populateReportCardModal() {
+            const students = [...new Map(records.map(r => [`${r.firstName} ${r.lastName}`, r])).values()];
+            students.sort((a, b) => a.lastName.localeCompare(b.lastName));
+
+            studentToEvaluateSelect.innerHTML = '<option value="">בחר תלמיד/ה</option>';
+            students.forEach(s => {
+                studentToEvaluateSelect.innerHTML += `<option value="${s.firstName} ${s.lastName}">${s.firstName} ${s.lastName}</option>`;
+            });
+        }
+
+        async function handleGenerateReportCardComment(e) {
+            e.preventDefault();
+            const studentName = studentToEvaluateSelect.value;
+            if (!studentName) {
+                alert("יש לבחור תלמיד/ה.");
+                return;
+            }
+
+            const studentRecords = records.filter(r => `${r.firstName} ${r.lastName}` === studentName);
+            
+            reportCardModal.classList.add('hidden');
+            showAiModal(`מפיק הערכה עבור ${studentName}...`);
+
+            const studentDataForPrompt = studentRecords.map(r => ({
+                test: r.testType,
+                result: r.originalResult,
+                grade: r.grade
+            }));
+
+            const prompt = `
+            אתה מורה מנוסה לחינוך גופני. כתוב הערכה מילולית לתעודה עבור התלמיד/ה ${studentName}.
+            ההערכה צריכה להיות בעברית, מאוזנת, קונסטרוקטיבית ומעודדת.
+
+            להלן סיכום ביצועי התלמיד/ה במבחנים השונים:
+            ${JSON.stringify(studentDataForPrompt, null, 2)}
+
+            מבנה ההערכה:
+            1.  **פתיחה:** התייחסות כללית להשתתפות, התנהגות או מאמץ בשיעורים.
+            2.  **נקודות חוזק:** ציין 1-2 תחומים (מבחנים) בהם התלמיד/ה הפגינ/ה יכולת גבוהה (ציונים גבוהים).
+            3.  **תחומים לשיפור:** ציין 1-2 תחומים בהם יש מקום להשתפר (ציונים נמוכים), תוך שימוש בביטויים מעודדים כמו "יש מקום לחיזוק" או "מומלץ להשקיע מאמץ נוסף ב...".
+            4.  **סיום:** משפט סיכום חיובי ומעודד.
+
+            הקפד על ניסוח מקצועי ומכבד.
+            `;
+
+            const reportComment = await callGemini(prompt);
+            displayAiContent(reportComment);
+        }
+
+        // --- EVENT LISTENERS ---
+        function setupEventListeners() {
+            genderSelect.addEventListener('change', updateGradeLevels);
+            gradeLevelSelect.addEventListener('change', () => {
+                updateTestTypes();
+                updateClassOptions();
+            });
+
+            testTypeSelect.addEventListener('change', updateUnitDisplay);
+
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const gender = genderSelect.value;
+                const gradeLevel = gradeLevelSelect.value;
+                const testType = testTypeSelect.value;
+                const result = resultInput.value.trim();
+                
+                const firstName = firstNameInput.value.trim();
+                const lastName = lastNameInput.value.trim();
+                
+                if (!firstName || !lastName) {
+                    alert("אנא הזן שם פרטי ושם משפחה.");
+                    return;
+                }
+
+                if (!testType || testType === 'לא נמצאו מבחנים') {
+                    alert("אנא בחר מבחן חוקי.");
+                    return;
+                }
+                if (result === '') { 
+                    alert("אנא הזן תוצאה.");
+                    return; 
+                }
+
+                const newRecord = {
+                    id: crypto.randomUUID(),
+                    firstName: firstName,
+                    lastName: lastName,
+                    gender: gender,
+                    gradeLevel: gradeLevel,
+                    className: classNameSelect.value,
+                    date: dateInput.value,
+                    testType: testType,
+                    originalResult: result, // Keep original input for display
+                    grade: calculateGrade(gender, gradeLevel, testType, result)
+                };
+
+                addRecord(newRecord);
+                
+                if (lockFormCheckbox.checked) {
+                    firstNameInput.value = '';
+                    lastNameInput.value = '';
+                    resultInput.value = '';
+                    firstNameInput.focus();
+                } else {
+                    form.reset();
+                    setDateToToday();
+                    updateGradeLevels();
+                }
+            });
+
+            exportBtn.addEventListener('click', exportToCSV);
+            
+            resultsTbody.addEventListener('click', (e) => {
+                const deleteBtn = e.target.closest('.delete-btn');
+                const feedbackBtn = e.target.closest('.generate-feedback-btn');
+                const shareBtn = e.target.closest('.share-whatsapp-btn');
+                const trainingBtn = e.target.closest('.generate-training-btn');
+
+                if (deleteBtn) {
+                    const recordId = deleteBtn.getAttribute('data-id');
+                    showConfirmModal('אישור מחיקה', 'האם אתה בטוח שברצונך למחוק רשומה זו?', () => deleteRecord(recordId));
+                }
+                if (feedbackBtn) {
+                    const record = JSON.parse(feedbackBtn.getAttribute('data-record'));
+                    handleGenerateFeedback(record);
+                }
+                if (shareBtn) {
+                    const record = JSON.parse(shareBtn.getAttribute('data-record'));
+                    handleShareToWhatsApp(record);
+                }
+                if (trainingBtn) {
+                    currentRecordForTraining = JSON.parse(trainingBtn.getAttribute('data-record'));
+                    trainingPlanStudentInfo.textContent = `תלמיד/ה: ${currentRecordForTraining.firstName} ${currentRecordForTraining.lastName} | מבחן: ${currentRecordForTraining.testType}`;
+                    trainingPlanModal.classList.remove('hidden');
+                }
+            });
+            
+            clearAllBtn.addEventListener('click', () => {
+                if (records.length === 0) return;
+                 showConfirmModal('מחיקת כל הנתונים', 'פעולה זו תמחק את כל הרשומות לצמיתות. האם להמשיך?', clearAllRecords);
+            });
+
+            generateInsightsBtn.addEventListener('click', handleGenerateInsights);
+            aiModalCloseBtn.addEventListener('click', () => aiModal.classList.add('hidden'));
+
+            openLessonPlanModalBtn.addEventListener('click', () => lessonPlanModal.classList.remove('hidden'));
+            lessonPlanCancelBtn.addEventListener('click', () => lessonPlanModal.classList.add('hidden'));
+            lessonPlanForm.addEventListener('submit', handleGenerateLessonPlan);
+
+            openShareGroupModalBtn.addEventListener('click', () => {
+                populateShareModal();
+                shareGroupModal.classList.remove('hidden');
+            });
+            shareGroupCancelBtn.addEventListener('click', () => shareGroupModal.classList.add('hidden'));
+            shareGroupForm.addEventListener('submit', handleShareGroup);
+
+            trainingPlanCancelBtn.addEventListener('click', () => trainingPlanModal.classList.add('hidden'));
+            trainingPlanForm.addEventListener('submit', handleGenerateTrainingPlan);
+
+            openReportCardModalBtn.addEventListener('click', () => {
+                populateReportCardModal();
+                reportCardModal.classList.remove('hidden');
+            });
+            reportCardCancelBtn.addEventListener('click', () => reportCardModal.classList.add('hidden'));
+            reportCardForm.addEventListener('submit', handleGenerateReportCardComment);
+            
+            document.getElementById('modal-confirm').addEventListener('click', () => {
+                if(confirmCallback) {
+                    confirmCallback();
+                }
+                confirmModal.classList.add('hidden');
+            });
+            document.getElementById('modal-cancel').addEventListener('click', () => {
+                confirmModal.classList.add('hidden');
+            });
+        }
+
+        // --- INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const loginPage = document.getElementById('login-page');
+            const mainApp = document.getElementById('main-app');
+            const loginForm = document.getElementById('login-form');
+            const initialLoader = document.getElementById('initial-loader');
+            
+            if (initialLoader) {
+                initialLoader.style.display = 'none';
+            }
+            if (mainApp) {
+                mainApp.style.display = 'none';
+            }
+            if(loginPage) {
+                loginPage.style.display = 'flex';
+            }
+
+            if (loginForm) {
+                loginForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const name = document.getElementById('login-name').value;
+                    const email = document.getElementById('login-email').value;
+                    const phone = document.getElementById('login-phone').value;
+
+                    if (!name || !email || !phone) {
+                        alert('אנא מלא את כל השדות.');
+                        return;
+                    }
+
+                    const subject = encodeURIComponent("רישום חדש לאפליקציית חינוך גופני");
+                    const body = encodeURIComponent(`פרטי משתמש חדש:\n\nשם: ${name}\nמייל: ${email}\nטלפון: ${phone}`);
+                    window.open(`mailto:liront17@gmail.com?subject=${subject}&body=${body}`);
+
+                    loginPage.style.display = 'none';
+                    mainApp.style.display = 'block';
+                    setupApp();
+                });
+            }
+        });
+
+    </script>
+</body>
+</html>
