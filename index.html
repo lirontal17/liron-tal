@@ -50,7 +50,7 @@
                     <input type="tel" id="login-phone" name="phone" required class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" placeholder="טלפון נייד">
                 </div>
                 <button type="submit" class="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-transform transform hover:scale-105 shadow-md">
-                    כניסה ושליחת פרטים בוואטסאפ
+                    כניסה ושליחת פרטים
                 </button>
             </form>
         </div>
@@ -896,26 +896,29 @@
             const component = document.getElementById('fitness-component').value;
             const equipment = document.getElementById('equipment').value || "ללא ציוד מיוחד";
             const duration = document.getElementById('lesson-duration').value;
-            
+            const gradeLevel = document.getElementById('grade-level').value; // Get the grade level from the main form
+
             lessonPlanModal.classList.add('hidden');
             showAiModal('מפיק מערך שיעור...');
 
             const prompt = `
-            You are an experienced physical education teacher. Write a detailed and professional lesson plan in Hebrew.
+            אתה מורה מנוסה לחינוך גופני. כתוב מערך שיעור מפורט ומקצועי בעברית, מותאם במיוחד לתלמידי כיתה ${gradeLevel}.
 
-            Lesson Details:
-            - **Main Goal:** Improve the fitness component: ${component}.
-            - **Available Equipment:** ${equipment}.
-            - **Lesson Duration:** ${duration}.
+            פרטי השיעור:
+            - **כיתת יעד:** ${gradeLevel}
+            - **מטרה מרכזית:** שיפור מרכיב הכושר הגופני: ${component}.
+            - **ציוד זמין:** ${equipment}.
+            - **משך השיעור:** ${duration}.
 
-            Lesson Plan Structure (adhere to this structure):
-            1.  **Warm-up** (~10 minutes): Detail 2-3 suitable dynamic warm-up exercises.
-            2.  **Main Part** (~${parseInt(duration) - 20} minutes): Describe 2-3 main exercises, stations, or activities. Explain how each activity improves ${component} and how to use the available equipment.
-            3.  **Concluding Game** (~5 minutes): Suggest a fun game related to the lesson's goal.
-            4.  **Cool-down and Stretching** (~5 minutes): Detail 2-3 static stretching exercises to finish.
+            מבנה מערך השיעור (יש להקפיד על מבנה זה):
+            1.  **חימום** (~10 דקות): פרט 2-3 תרגילי חימום דינמיים המתאימים לגיל זה.
+            2.  **חלק עיקרי** (~${parseInt(duration) - 20} דקות): תאר 2-3 תרגילים, תחנות, או פעילויות מרכזיות. הסבר כיצד כל פעילות משפרת את ה-${component}, כיצד להשתמש בציוד הקיים, וספק התאמות להקל או להקשות על תלמידים ברמות שונות.
+            3.  **משחק מסכם** (~5 דקות): הצע משחק מהנה הקשור למטרת השיעור ומתאים לכיתה ${gradeLevel}.
+            4.  **שחרור ומתיחות** (~5 דקות): פרט 2-3 תרגילי מתיחות סטטיות לסיום.
 
-            Ensure instructions are clear, safe, and professional.
+            ודא שההוראות ברורות, בטיחותיות, מקצועיות, וכל הפעילויות מותאמות לגיל של תלמידי כיתה ${gradeLevel}.
             `;
+
             const lessonPlan = await callGemini(prompt);
             displayAiContent(lessonPlan);
         }
@@ -1170,11 +1173,9 @@
                         return;
                     }
 
-                    // Replace with your phone number in international format (e.g., 9725XXXXXXXXX)
-                    const adminPhoneNumber = "9725XXXXXXXXX"; 
-                    const message = encodeURIComponent(`רישום חדש לאפליקציה:\n\nשם: ${name}\nמייל: ${email}\nטלפון: ${phone}`);
-                    const whatsappUrl = `https://api.whatsapp.com/send?phone=${adminPhoneNumber}&text=${message}`;
-                    window.open(whatsappUrl, '_blank');
+                    const subject = encodeURIComponent("רישום חדש לאפליקציית חינוך גופני");
+                    const body = encodeURIComponent(`פרטי משתמש חדש:\n\nשם: ${name}\nמייל: ${email}\nטלפון: ${phone}`);
+                    window.open(`mailto:liront17@gmail.com?subject=${subject}&body=${body}`);
 
                     loginPage.style.display = 'none';
                     mainApp.style.display = 'block';
